@@ -10,7 +10,10 @@ def smtp(
         timeout:float=20
 ):
     try:
-        mail = smtplib.SMTP_SSL(host=host, port=port, timeout=timeout, context=ssl_context)
+        mail = smtplib.SMTP(host=host, port=port, timeout=timeout)
+        mail.ehlo()
+        mail.starttls(context=ssl_context)
+        mail.ehlo()
         mail.login(user=user, password=pwd)
         return mail
     except(smtplib.SMTPException, TimeoutError, ConnectionRefusedError, Exception) as e:

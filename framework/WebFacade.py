@@ -14,10 +14,10 @@ class WebFacade(framework.WebDriver):
         _change: Change class
     """
 
-    _actions = None
-    _waits = None
-    _validate = None
-    _change = None
+    _actions:framework.Actions = None
+    _waits:framework.Waits = None
+    _validate:framework.Validate = None
+    _change:framework.Change = None
 
     @classmethod
     def initialize_instaces(self):
@@ -32,7 +32,7 @@ class WebFacade(framework.WebDriver):
                 setattr(self, attribute_name, instance)
 
     @classmethod
-    def get_instance(self, class_name:str):
+    def get_instance(self, class_name:str)->framework.Waits | framework.Actions | framework.Validate | framework.Change:
         """ 
         Get an instance of the specified class. 
 
@@ -50,7 +50,6 @@ class WebFacade(framework.WebDriver):
         """
         attr_name = f"_{lowercase(class_name)}"
         if(attr_name in self.__dict__):
-            print("OK, attr_name")
             return self.__initialize_class_instance(class_name)
         raise AttributeError(f"Class not exist {attr_name}")
 

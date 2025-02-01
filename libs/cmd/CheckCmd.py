@@ -1,32 +1,44 @@
-import sys, os, importlib
+import sys
+from typing import Union, List, Tuple
 
 dict_cmd = {}
-def get_all_params(listConsole:dict = dict_cmd):
-    all_args = sys.argv
-    for arg in all_args:
-        if("--" in arg or "-" in arg):
-            listConsole[arg] = ""
-            continue
-        arg_prev = all_args[all_args.index(arg) - 1]
-        if(arg_prev in listConsole.keys()):
-            listConsole[arg_prev] = arg
+
+def get_all_params():
+    all_args = sys.argv[1:]
+    listConsole = {}
+    i = 0
+    while i < len(all_args):
+        arg = all_args[i]
+
+        if arg.startswith("--") or (arg.startswith("-") and len(arg) > 1):
+            if i + 1 < len(all_args) and not all_args[i + 1].startswith("-"):
+                listConsole[arg] = all_args[i + 1]
+                i += 1
+            else:
+                listConsole[arg] = ""
+        i += 1
+    global dict_cmd
+    dict_cmd = listConsole
     return listConsole
 
-def get_type_of_param(key: str) -> str|None:
+def get_type_of_param(keys: Union[str, List, Tuple]) -> str | None:
     """
     Get params of console.
 
     Params:
-        param (str):
+        keys (Union[str, List, Tuple]):
           Index to found (example "--{param} {value}")
-
     Returns:
         str:
             Value passed in the param
         None:
             If not found the param
     """
-    if(not dict_cmd):
-        get_all_params(dict_cmd)
-    if(key in dict_cmd.keys()):
-        return dict_cmd.get(key)
+    if not dict_cmd:
+        get_all_params()
+
+    match keys:
+        case str():
+            return dict_cmd.get(keys)
+        case list() | tuple():
+            return next((dict_cmd.get(k) for k in keys if k in dict_cmd), None)

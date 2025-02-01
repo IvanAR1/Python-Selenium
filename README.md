@@ -1,4 +1,4 @@
-#Python-Selenium
+# Python-Selenium
 
 ## About Python-Selenium
 
@@ -42,6 +42,11 @@ _* For best suggestions, check the folder name 'project'._
 ## Documentation
 Theren't documentation available, but work is currently being done to make it available.
 In a future this page will be updated with the link to the docs. 
+
+## Changes with V1.2
+- In this version, --project command changed to --run-project or -rp
+- Add --make-model and --make-project (or -mk) added.
+- Add multidatabase to models (specified with __bind_key__ in model)
 
 ## License
 The Python-Selenium framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

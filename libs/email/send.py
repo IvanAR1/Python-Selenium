@@ -3,6 +3,7 @@ from email import encoders
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
+from ..path.path_utils import BaseName, WithoutExtension
 
 def globalEmail(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, cc_email:str=None, cco_email:str=None, files:list = None):
     try:
@@ -16,9 +17,9 @@ def globalEmail(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_ema
         if(files != None):
             for key, file in enumerate(files):
                 file_name = None
-                if(isinstance(file, object) and 'file_ubication' in file):
+                if(isinstance(file, dict) and file.get("file_ubication")):
                     file_ubication = file['file_ubication']
-                    if('file_name' in file):
+                    if(file.get("file_name")):
                         file_name = file['file_name']
                 elif(isinstance(file, str)):
                     file_ubication = file
@@ -33,11 +34,13 @@ def globalEmail(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_ema
         mail.sendmail(from_email, to_email, message.as_string())
     except smtplib.SMTPException as e:
         raise Exception("Error al enviar el correo: %s" % e)
-    except:
-        raise Exception("Error desconocido al enviar el correo.")
+    except Exception as e:
+        raise Exception("Error al enviar el correo: %s" %e)
     
 def onlyText(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, cc_email:str=None, cco_email:str=None):
     globalEmail(mail, subject, body, from_email, to_email, cc_email, cco_email)
     
-def withFiles(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, files:list, cc_email:str="", cco_email:str=""):
-    globalEmail(mail, subject, body, from_email, to_email, files, cc_email, cco_email)
+def withFiles(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, files:list|str, cc_email:str="", cco_email:str=""):
+    if isinstance(files, str):
+        files = [{"file_ubication":files, "file_name":BaseName(files)}]
+    globalEmail(mail, subject, body, from_email, to_email, cc_email, cco_email, files)

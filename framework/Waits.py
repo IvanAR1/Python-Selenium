@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 T = TypeVar("T")
 class Waits(WebDriver):
     ec:EC = EC
+
     @classmethod
     def implicitly(self, time_to_wait:float) -> None:
         """
@@ -23,7 +24,7 @@ class Waits(WebDriver):
         self.driver.implicitly_wait(time_to_wait)
 
     @classmethod
-    def explicitly(self, timeout:float, ec:EC, errorMessage:str = "") -> T:
+    def explicitly(self, timeout:float, ec:EC, errorMessage:str = "", driver:WebDriver|WebElement = None) -> T:
         """
         Calls the method provided with the driver as an argument until the return value does not evaluate to ``False``.
 
@@ -46,8 +47,8 @@ class Waits(WebDriver):
                 any error ocurred
         """
         try:
-            return WebDriverWait(self.driver, timeout).until(ec, message=errorMessage)
-        except Exception as e:
+            return WebDriverWait(driver or self.driver, timeout).until(ec, message=errorMessage)
+        except:
             returnValues = (False, errorMessage)[errorMessage != ""]
             return returnValues
 

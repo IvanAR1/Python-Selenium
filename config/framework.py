@@ -1,0 +1,2 @@
+EXCEL_ENGINE="openpyxl"
+EXTENSION_LOADER=".env"

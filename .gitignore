@@ -1,4 +1,6 @@
 **/.env
 **/__pycache__
-/venv
 **/Log
+# Change folder for venv name folder
+/venv
+/packages

@@ -139,7 +139,7 @@ class WebDriver():
 		"""
 		if self.driver is None:
 			WebDriver.browser = browser
-			self.driver = WebDriver().getDriver()
+			WebDriver.driver = self.driver = WebDriver().getDriver()
 		return self.driver
 	
 	def factoryMain(*objs:Self):
