@@ -48,7 +48,7 @@ class Waits(WebDriver):
         """
         try:
             return WebDriverWait(driver or self.driver, timeout).until(ec, message=errorMessage)
-        except:
+        except Exception:
             returnValues = (False, errorMessage)[errorMessage != ""]
             return returnValues
 
@@ -79,7 +79,7 @@ class Waits(WebDriver):
             try:
                 if(element.is_displayed()):    
                     return True
-            except:
+            except Exception:
                 return True
 
     @classmethod

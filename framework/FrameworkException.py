@@ -1,3 +1,4 @@
 from selenium.common.exceptions import WebDriverException
 
-class FrameworkException(WebDriverException):pass
+class FrameworkException(WebDriverException):
+    pass

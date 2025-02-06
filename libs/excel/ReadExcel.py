@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import Callable, Sequence
+from typing import Callable
 from config.framework import EXCEL_ENGINE
 from libs.path.path_utils import AcceptFile, ExistPath, RecursiveFiles
 
@@ -48,8 +48,9 @@ def ColsInHeader(row:pd.Series, accept_name_cols:list = []) -> list:
                 total_accept_cols.append(columnName)
     return total_accept_cols
     
-def GetValueFromRow(row:pd.Series, index:int|str):
-    try:
-        return row[index]
-    except:
-        return None
+def GetValueFromRow(row:pd.Series, *indexes:int|str):
+    for index in indexes:
+        data = row.get(index)
+        if data:
+            return data
+    raise Exception(f"Values {indexes} not found in row {row}")

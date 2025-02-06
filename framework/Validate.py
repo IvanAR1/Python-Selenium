@@ -1,4 +1,4 @@
-from selenium.webdriver.common.by import By;
+from selenium.webdriver.common.by import By
 from framework import Actions, WebDriver
 
 class Validate(Actions):
@@ -16,5 +16,5 @@ class Validate(Actions):
             if len(self.findElements(By, element) ) > 0:
                 return True
             return False
-        except:
+        except Exception:
             return False

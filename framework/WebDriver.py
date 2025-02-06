@@ -1,157 +1,149 @@
-from typing import Self
+import os
 from selenium import webdriver
+from typing import Self, Optional
 from libs.path.config_loader import env
-from selenium.webdriver.remote import webdriver as web
+from config.browsers import SAVED_ON_LOCAL, BROWSERS 
+from selenium.webdriver.common import service as Service
+from selenium.webdriver.common.options import ArgOptions
+from webdriver_manager.core.os_manager import ChromeType
 from libs.path.path_utils import NormalizePathExpandVars
-from selenium.webdriver.chrome.service import Service as ServiceChrome
-from selenium.webdriver.firefox.service import Service as ServiceFirefox
+from selenium.webdriver.remote.webdriver import WebDriver as SeleniumWebDriver
+from libs.logs import get_log_folder
 
+os.environ["WDM_LOCAL"] = str(SAVED_ON_LOCAL)
 class WebDriver():
 	"""
-	Configure and run selenium
+	Class to configure and manage a Selenium WebDriver instance.
 
 	Attributes:
-		webelement (WebElement): 
-			Object that contains all page's manage.
-		browser (str):
-			Browser for manager (only Chrome and Firefox)
+		browser (str): 
+			The name of the browser to use.
+		driver (Optional[SeleniumWebDriver]):
+			The Selenium WebDriver instance.
+		grid_url (Optional[ChromeType]):
+			URL of the Selenium Grid Hub (if running in Grid Mode)
+		_chrome_type (ChromeType | None):
+			Identifies if the browser is a Chrome-based type.
+		
 	"""
 	browser:str = None
-	driver:web.WebDriver = None
+	driver:Optional[SeleniumWebDriver] = None
+	grid_url:Optional[str] = env("SELENIUM_GRID_URL")
+	_chrome_type:ChromeType = None
 
-	def _get_options(self:Self, browser:str) -> (webdriver.FirefoxOptions | webdriver.ChromeOptions | None):
+	def _set_browser_type(self:Self, browser:str):
 		"""
-		Get the browser options. 
+        Determines if the browser is a Chrome.based type and sets the `_chrome_type` attribute.
 
-		Params:
-			self (WebDriver): 
-				Instance of class. 
-			browser (str): 
-				Name of the browser (Firefox or Chrome). 
+		Args:
+			self (Self):
+				class instance
+			browser (str):
+				Browser name (e.g., 'CHROME', 'GOOGLE', GOOGLE CHROME')
+		"""
+		browser_aliases = ("GOOGLE", "CHROME", "GOOGLE CHROME")
+		if browser.upper() in browser_aliases:
+			browser = "GOOGLE"
+		self.browser = browser
+		self._chrome_type = ChromeType.__dict__.get(browser.upper())
 
+	def _get_browser_specifications(self:Self):
+		"""Retrieves browser-specific settings such as WebDriver, manager, options, and service.
+
+		Args:
+			self (Self):
+				class instance
+			browser (str):
+				browser (str): Browser name.
 		Returns:
-			FirefoxOptions:
-				Options for Firefox
-			ChromeOptions:
-				Options for Chrome.
-			None:
-				If browser isn't support.
+			tuple: Specifications including web driver, manager, options, and service.
 		"""
-		options = {
-			"Firefox": webdriver.FirefoxOptions,
-			"Chrome": webdriver.ChromeOptions
-		}
-		return options.get(browser, None)();
+		return BROWSERS.get( self.browser.upper(), (None, None, None, None) )
 
-	def _get_service(self:Self, browser:str, fileWebDriver:str) -> (ServiceFirefox | ServiceChrome | None):
-		""" 
-		Get the service for the browser.
+	def get_driver(self:Self,
+			browser:str= "CHROME",
+			binary_path:str|None = env("BINARY_PATH"),
+			browser_version:str|None = env("BROWSER_VERSION"),
+			required_log:bool = False,
+			use_grid:bool = False,
+			**kwargs
+		)-> SeleniumWebDriver:
+		"""
+		Initializes and returns a Selenium WebDriver instance.
 
-		Params:
+		Args:
 			self (WebDriver):
 				Instance of class.
-			browser (str):
-				Name of the browser (Firefox or Chrome).
-			fileWebDriver (str)
-				Path to the WebDriver executable.
-		Returns:
-			ServiceFirefox:
-				Service of Firefox
-			ServiceChrome:
-				Service of Chrome
-			None:
-				If browser isn't supported
-		"""
-		services = {
-			"Firefox": ServiceFirefox,
-			"Chrome": ServiceChrome
-		}
-		service_class = services.get(browser, None);
-		driver = service_class(executable_path=NormalizePathExpandVars(fileWebDriver)) if service_class else None;
-		return driver;
-
-	def _set_driver(self:Self, options:_get_options, service:_get_service, browser:str) -> (web.WebDriver | None):
-		"""
-		Set the WebDriver instance.
-
-		Params:
-			self (WebDriver):
-				Instance of class. 
-			options (webdriver.FirefoxOptions or webdriver.ChromeOptions):
-			 	Options for the browser. 
-			service (ServiceFirefox or ServiceChrome): 
-				Service for the browser. 
-			browser (str):
-				Name of the browser (Firefox or Chrome).
-
-		Returns:
-			WebDriver:
-				Instance of the WebDriver for Chrome or Firefox
-			None:
-				If browser isn't support.
+			browser (str|None):
+				Browser name (default: 'GOOGLE')
+			binary_path (str|None):
+				Path of the browser binary, if needed.
+			browser_version (str|None):
+				Version of the Browser app (recommended if crashed for not found version).
+			use_grid:bool (False):
+				If True, connects to Selenium Grid.	
 			
-		"""
-		drivers = {
-			"Firefox": webdriver.Firefox,
-			"Chrome": webdriver.Chrome
-		}
-		driver_class:webdriver.Firefox | webdriver.Chrome = drivers.get(browser, None);
-		return driver_class(options=options, service=service) if driver_class else None;
-
-	def getDriver(self:Self,
-			fileBnLoc:str = env("BINARY_PATH"),
-			fileWebDriver:str = env("DRIVER_PATH")
-		)-> web.WebDriver:
-		"""
-		Get the configured WebDriver.
-
-		Params:
-			self (WebDriver):
-				Instance of class.
-			fileBnLoc (str):
-				Path to the browser binary.
-			fileWebDriver (str):
-				Path to the WebDriver executable.
-
 		Returns
-			WebDriver:
+			SeleniumWebDriver:
 				Configured WebDriver instance.
-		
 		Raises:
 			ValueError:
-				If the browser isn't supported.
+				If the browser is not supported.
 		"""
-		if self.browser not in ["Firefox", "Chrome"]:
-			raise ValueError(f"El navegador {self.browser} no está soportado");
-		options = self._get_options(self.browser);
-		options.binary_location = NormalizePathExpandVars(fileBnLoc);
-		service = self._get_service(self.browser, fileWebDriver);
-		return self._set_driver(options, service, self.browser);
+		self._set_browser_type(browser)
+		web_driver, manager, options_cls, service_cls = self._get_browser_specifications()
+		if not all([web_driver, manager, options_cls, service_cls]):
+			raise ValueError(f"El navegador {self.browser} no está soportado")
+		# Install WebDriver
+		driver_path:str = manager(chrome_type=self._chrome_type, driver_version=browser_version).install() \
+			if self._chrome_type else manager(version=browser_version).install()
+		options:ArgOptions = options_cls()
+		if binary_path:
+			options.binary_location = NormalizePathExpandVars(binary_path)
+		if use_grid and self.grid_url:
+			options.add_argument("--no-sandbox")
+			return webdriver.Remote(command_executor=self.grid_url, options=options, **kwargs)
+
+		service:Service = service_cls(driver_path, log_output=(get_log_folder("selenium"), None)[not required_log])
+		# Configure browser-specific options
+		if self.browser.lower() == "opera":
+			options.add_argument("--remote-allow-origins=*")
+			options.add_experimental_option('w3c', True)
+		return web_driver(service=service, options=options)
 
 	@classmethod
-	def initialize_driver(self:Self, browser:str = env("BROWSER")):
+	def initialize_driver(cls:Self, browser:str = env("BROWSER"), log:bool = False) -> SeleniumWebDriver:
 		"""
-		Initialize the Selenium WebDriver instance if it has not already been created.
+		Initialize the Selenium WebDriver instance as a singleton instance.
+
+		Args:
+			cls (Self):
+				Instance of class (not required)
+			browser (str):
+				Browser to be used (default: value from env 'BROWSER')
 
 		Returns:
-			webdriver:
-				The singleton instance of Selenium WebDriver
+			SeleniumWebDriver:
+				Singleton instance of WebDriver
 		"""
-		if self.driver is None:
-			WebDriver.browser = browser
-			WebDriver.driver = self.driver = WebDriver().getDriver()
-		return self.driver
+		if cls.driver is None:
+			cls.driver = WebDriver().get_driver(browser, required_log=log)
+		return cls.driver
 	
-	def factoryMain(*objs:Self):
+	def factory_main(*objs:Self):
 		"""
-		Execute the point center
+		Execute 'main()' method of multiple instances
 
-		Params:
+		Args:
 			objs ((Self|list[Self])):
-				Class(es) instance
-		Returns:
-			any:
-				Anything that you requires
+				One or more class instances.
 		"""
 		for obj in objs:
 			obj.main()
+
+	def __del__(self:Self):
+		"""
+		Ensures that the WebDriver instance is properly closed when the object is deleted.
+		"""
+		if isinstance(self.driver, SeleniumWebDriver):
+			self.driver.quit()

@@ -1,18 +1,24 @@
-from datetime import datetime, timedelta, date
 import dateutil
 import calendar
+from config.framework import FORMAT_DATE
+from datetime import datetime, timedelta, date
 
-def add_seconds(date:str, format:str, seconds:float) -> datetime:
-    return datetime.strptime(date, format) + timedelta(seconds=seconds)
+def add_global(date_:str|datetime, format_ = FORMAT_DATE, **kwargs):
+    if isinstance(date_, str):
+        date_ = datetime.strptime(date_, format_)
+    return date_ + timedelta(**kwargs)
 
-def add_minutes_and_hours(date:str, format:str, minutes:float=0, hours:float = 0) -> datetime:
-    return datetime.strptime(date, format) + timedelta(minutes=minutes, hours=hours)
+def add_seconds(date_:str|datetime, format_:str=FORMAT_DATE, seconds:float=0) -> datetime:
+    return add_global(date_, format_, seconds=seconds)
 
-def add_days(date:str, format:str, days:float) -> datetime:
-    return datetime.strptime(date, format) + timedelta(days=days)
+def add_minutes_and_hours(date_:str|datetime, format_:str=FORMAT_DATE, minutes:float=0, hours:float = 0) -> datetime:
+    return add_global(date_, format_, minutes=minutes, hours=hours)
 
-def add_weeks(dateFrom:datetime, weeks:int) -> datetime:
-    return dateFrom + timedelta(weeks=weeks)
+def add_days(date_:str|datetime, format_:str=FORMAT_DATE, days:float = 0) -> datetime:
+    return add_global(date_, format_, days=days)
+
+def add_weeks(date_:datetime, format:str=FORMAT_DATE, weeks:int=0) -> datetime:
+    return add_global(date_, format_=format, weeks=weeks)
 
 def add_months(dateFrom:datetime, months:int) -> datetime:
     months_count = dateFrom.month + months

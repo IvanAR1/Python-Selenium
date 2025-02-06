@@ -2,8 +2,8 @@ import autoit
 import threading
 import pythoncom
 import xlwings as xw
+from typing import Callable
 from libs.logs import api_logger
-from collections.abc import Callable
 
 def excel_handle_popup(windows_titles:list, condition_while:Callable, button_to_click:str):
     """Maneja ventanas emergentes dinámicamente hasta que se indique detenerse."""
