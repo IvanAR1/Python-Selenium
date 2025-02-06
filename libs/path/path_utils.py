@@ -59,11 +59,11 @@ def ExistPath(path: str) -> bool:
     """Verifica si un directorio existe."""
     return os.path.isdir(path)
 
-def AcceptFile(path: str, accept_files: Union[str, List[str]]) -> bool:
+def AcceptFile(file_path:str, accept_files:Union[str, List[str]]) -> bool:
     """Verifica si un archivo tiene una extensión aceptada."""
     if isinstance(accept_files, str):
         accept_files = accept_files.split("|")
-    return os.path.splitext(path)[1] in accept_files
+    return f".{file_path.rsplit('.', 1)[-1]}" in accept_files
 
 def CreatePath(path: str) -> str:
     """Crea un directorio si no existe."""
@@ -106,14 +106,18 @@ def FileContainStr(file: str, search: str) -> bool:
     """Verifica si un archivo contiene una cadena específica en su nombre."""
     return search in file.lower()
 
-def RecursiveFiles(path: str, callback: Callable[[str], bool], accept_files: Union[str, List[str]] = None) -> List[str]:
+def RecursiveFiles(path: str, callback: Callable[[str], bool] = None, accept_files: Union[str, List[str]] = None) -> List[str]:
     """Busca archivos recursivamente aplicando un callback."""
-    files = []
+    values_returned = []
     if ExistPath(path):
         for file in GetFullPathFilesInPath(path, accept_files):
-            if callback(file):
-                files.append(file)
-    return files
+            if isinstance(callback, Callable):
+                value_returned = callback(file)
+                if value_returned:
+                    values_returned.append(value_returned)
+                continue
+            values_returned.append(file)
+    return values_returned
 
 def CountValidFiles(folder_path: str, valid_extensions: Union[str, List[str]] = None) -> int:
     """

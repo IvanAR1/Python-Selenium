@@ -8,6 +8,7 @@ from selenium.webdriver.common.action_chains import ActionChains, AnyDevice
 
 class Actions(WebDriver, By):
     webElement:WebElement = WebElement
+    keys = Keys
 
     @property
     def actions_chains(self:Self) -> property:

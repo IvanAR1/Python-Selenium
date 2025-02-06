@@ -4,3 +4,5 @@
 # Change folder for venv name folder
 /venv
 /packages
+# Folder save drivers if exist
+**/.wdm

@@ -1,20 +1,21 @@
-import os, smtplib
+import os
+import smtplib
 from email import encoders
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
-from ..path.path_utils import BaseName, WithoutExtension
+from ..path.path_utils import BaseName
 
 def globalEmail(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, cc_email:str=None, cco_email:str=None, files:list = None):
     try:
         message = MIMEMultipart()
         message['From'] = from_email
         message['To'] = (',').join(to_email.split(';'))
-        message['CC'] = (',').join(cc_email.split(';')) if cc_email != None else None
-        message['CCO'] = (',').join(cco_email.split(';')) if cco_email != None else None
+        message['CC'] = (',').join(cc_email.split(';')) if cc_email is not None else None
+        message['CCO'] = (',').join(cco_email.split(';')) if cco_email is not None else None
         message['Subject'] = subject
         message.attach(MIMEText(body, 'plain'))
-        if(files != None):
+        if(files is not None):
             for key, file in enumerate(files):
                 file_name = None
                 if(isinstance(file, dict) and file.get("file_ubication")):
@@ -23,8 +24,8 @@ def globalEmail(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_ema
                         file_name = file['file_name']
                 elif(isinstance(file, str)):
                     file_ubication = file
-                if(file != None and os.path.exists(file_ubication)):
-                    file_name = 'file (%s).%s' %(key, file_ubication.split('.')[-1]) if file_name == None else file_name
+                if(file is not None and os.path.exists(file_ubication)):
+                    file_name = 'file (%s).%s' %(key, file_ubication.split('.')[-1]) if not file_name else file_name
                     with open(file_ubication, 'rb') as f:
                         part = MIMEBase('application', 'octet-stream')
                         part.set_payload(f.read())
