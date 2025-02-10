@@ -26,6 +26,12 @@ class Actions(WebDriver, By):
     def findElements(self:Self, by:By|str = By.ID, element:str = "") -> List[WebElement]:
         return self.driver.find_elements(by, element)
 
+    def execute_script(self:Self, script, *elements:WebElement, async_ = False):
+        if async_:
+            self.driver.execute_async_script(script, *elements)
+        else:
+            self.driver.execute_script(script, *elements)
+
     @classmethod
     def click(self:Self, element:WebElement) -> WebElement:
         return element.click()
@@ -46,8 +52,12 @@ class Actions(WebDriver, By):
             Actions.actions_chains.fget(self).move_to_element(element).perform()
 
     @classmethod
-    def sendKeys(self:Self, element:WebElement, keys:str|Keys) -> None:
-        Actions.actions_chains.fget(self).click(on_element=element).send_keys(keys).perform()
+    def sendKeys(self:Self, element:WebElement, *keys:str|Keys) -> None:
+        try:
+            Actions.actions_chains.fget(self).click(on_element=element).send_keys(*keys).perform()
+        except Exception as e:
+            if "cyclic object value" in str(e).lower():
+                element.send_keys(*keys)
 
     @classmethod
     def scrollElement(self:Self, element:WebDriver) -> Any:
