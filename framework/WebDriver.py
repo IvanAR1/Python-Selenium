@@ -1,4 +1,6 @@
 import os
+import platform
+import win32com.client
 from selenium import webdriver
 from typing import Self, Optional
 from libs.path.config_loader import env
@@ -91,6 +93,13 @@ class WebDriver():
 				If the browser is not supported.
 		"""
 		self._set_browser_type(browser)
+
+		#Changed binary shortcut to binary realpath
+		if str(binary_path).rsplit(".", 1)[-1] and "Win" in platform.system():
+			shell = win32com.client.Dispatch("WScript.Shell")
+			binary_path = shell.CreateShortCut(NormalizePathExpandVars(binary_path)).Targetpath
+		else:
+			binary_path = os.path.realpath(NormalizePathExpandVars(binary_path))
 		web_driver, manager, options_cls, service_cls = self._get_browser_specifications()
 		if not all([web_driver, manager, options_cls, service_cls]):
 			raise ValueError(f"El navegador {self.browser} no está soportado")

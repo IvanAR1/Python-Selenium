@@ -59,5 +59,8 @@ In a future this page will be updated with the link to the docs.
 - Added function execute_script in Actions
 - Recently, Firefox MDN reported about the "cyclic object value" bug. It has been fixed in sendKeys function of Actions.
 
+## Changes with V1.2.6
+- Added support to shortcuts binaries files (In windows, in others SO not yet corroborated)
+
 ## License
 The Python-Selenium framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

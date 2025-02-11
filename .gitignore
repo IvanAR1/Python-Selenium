@@ -1,8 +1,8 @@
 **/.env
-**/__pycache__
-**/Log
+**/__pycache__/
+**/Log/
+/packages/
 # Change folder for venv name folder
-/venv
-/packages
+/*venv*/
 # Folder save drivers if exist
-**/.wdm
+/.wdm/
