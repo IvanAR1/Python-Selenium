@@ -95,7 +95,7 @@ class WebDriver():
 		self._set_browser_type(browser)
 
 		#Changed binary shortcut to binary realpath
-		if str(binary_path).rsplit(".", 1)[-1] and "Win" in platform.system():
+		if str(binary_path).rsplit(".", 1)[-1] == "lnk" and "Win" in platform.system():
 			shell = win32com.client.Dispatch("WScript.Shell")
 			binary_path = shell.CreateShortCut(NormalizePathExpandVars(binary_path)).Targetpath
 		else:

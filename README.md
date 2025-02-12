@@ -62,5 +62,8 @@ In a future this page will be updated with the link to the docs.
 ## Changes with V1.2.6
 - Added support to shortcuts binaries files (In windows, in others SO not yet corroborated)
 
+## Changes with V1.2.6 --solved-bug-1.0
+- Bug in WebDriver (binary_loc was not validated to .lnk extension)
+
 ## License
 The Python-Selenium framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
