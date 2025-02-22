@@ -1,0 +1,4 @@
+PATH_STRICT = False
+EXCEL_ENGINE="openpyxl"
+EXTENSION_LOADER=".env"
+FORMAT_DATE="%Y-%m-%d"

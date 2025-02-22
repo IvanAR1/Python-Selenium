@@ -1,0 +1,59 @@
+import pandas as pd
+from typing import Callable
+from config.framework import EXCEL_ENGINE
+from libs.path.utils.folder import RecursiveFiles
+from libs.path.utils.file import FileContainsExtension, FileNotUsed
+
+def Load(file:str, **kwargs):
+    if FileContainsExtension(file, ".xlsx"):
+        return pd.read_excel(file, engine=EXCEL_ENGINE, **kwargs)
+    elif FileContainsExtension(file, ".csv"):
+        return pd.read_csv(file, engine=EXCEL_ENGINE, **kwargs)
+    elif FileContainsExtension(file, ".xls"):
+        return pd.read_excel(file, **kwargs)
+    else:
+        raise Exception("File isn't an Excel or CSV type")
+
+def Manage(file:str, manipule_xlsx:Callable = None, min_row:int=1, max_cols:int = None, **kwargs):
+    if FileNotUsed(file):
+        df = Load(file, **kwargs)
+        if isinstance(df, dict):
+            dx={}
+            for index, dataFrame in df.items():
+                df[index] = dataFrame.iloc[:, :max_cols]
+                dx[index] = dataFrame.iloc[min_row-1:]
+            return dx, df
+        df = df.iloc[:, :max_cols]
+        if not df.empty:
+            dx = df.iloc[min_row-1:]
+            if isinstance(manipule_xlsx, Callable):
+                value_return = None
+                for index, row in dx.iterrows():
+                    excel = {"dx":dx, "df":df}
+                    returned_call = manipule_xlsx(index, row, excel, file)
+                    if returned_call is False:
+                        return (False, value_return)[value_return is not None]
+                    if returned_call is not None:
+                        value_return = returned_call
+                return value_return
+            else:
+                return dx, df
+
+def ManageMultiple(path:str, manipule_xlsx:Callable, min_row:int=1, max_cols:int=None, **kwargs):
+    RecursiveFiles(path, lambda file: Manage(file, manipule_xlsx, min_row, max_cols, **kwargs), ".xlsx|.xls|.csv")
+        
+def ColsInHeader(row:pd.Series, accept_name_cols:list = []) -> list:
+    total_accept_cols = []
+    for name, _ in row.items():
+        if isinstance(name, str):
+            columnName = str.replace(name, "\n", " ")
+            if columnName in accept_name_cols and columnName not in total_accept_cols:
+                total_accept_cols.append(columnName)
+    return total_accept_cols
+    
+def GetValueFromRow(row:pd.Series, *indexes:int|str):
+    for index in indexes:
+        data = row.get(index)
+        if data:
+            return data
+    raise Exception(f"Values {indexes} not found in row {row}")

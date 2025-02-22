@@ -1,0 +1,9 @@
+**/.env
+**/.env.json
+**/__pycache__
+**/Log
+/packages/
+# Change folder for venv name folder
+/*venv*/
+# Folder save drivers if exist (will be required in version 1.2.5 of the framework)
+/.wdm

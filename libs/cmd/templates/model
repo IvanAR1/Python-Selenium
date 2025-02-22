@@ -1,0 +1,11 @@
+from libs.databases import DBManager
+from sqlalchemy import (
+    Column, VARCHAR, Integer, DECIMAL
+)
+from sqlalchemy.orm import (
+    Mapped, mapped_column
+)
+
+class {nameModel}(DBManager):
+    {table_name}
+    {engine}
