@@ -7,6 +7,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.action_chains import ActionChains, AnyDevice
 
 class Actions(WebDriver, By):
+    keys:Keys = Keys
     webElement:WebElement = WebElement
 
     @property
