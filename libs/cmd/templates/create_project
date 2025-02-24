@@ -1,2 +1,7 @@
 def execute_from_command_line(action: str):
+    """Point of initialize the project
+
+    Args:
+        action (str): An action to always execute
+    """
     pass

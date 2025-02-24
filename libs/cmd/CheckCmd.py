@@ -1,9 +1,15 @@
 import sys
 from typing import Union, List, Tuple
 
+# Console params
 dict_cmd = {}
 
-def get_all_params():
+def get_all_params() -> dict:
+    """Get all params in console.
+
+    Returns:
+        dict: all params in console.
+    """
     all_args = sys.argv[1:]
     listConsole = {}
     i = 0
@@ -23,7 +29,7 @@ def get_all_params():
 
 def get_type_of_param(keys: Union[str, List, Tuple]) -> str | None:
     """
-    Get params of console.
+    Get an param by console.
 
     Params:
         keys (Union[str, List, Tuple]):
@@ -36,7 +42,6 @@ def get_type_of_param(keys: Union[str, List, Tuple]) -> str | None:
     """
     if not dict_cmd:
         get_all_params()
-
     match keys:
         case str():
             return dict_cmd.get(keys)

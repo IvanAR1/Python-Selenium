@@ -1,20 +1,25 @@
 import os
 import re
 import json
+import warnings
+import functools
 from pathlib import Path
 from dotenv import load_dotenv
+from .path_utils import AcceptFile, BaseName
 from config.framework import EXTENSION_LOADER
 from libs.cmd.CheckCmd import get_type_of_param
-from .path_utils import AcceptFile, BaseName
-from deprecated import deprecated
+
+def deprecated(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        warnings.warn(f"{func.__name__} and all methods in module 'libs.path.config_loader' are deprecated and deleted in other version. Please, use the module 'libs.path.loader'; version=1.0.0", category=DeprecationWarning, stacklevel=2)
+        return func(*args, **kwargs)
+    return wrapper
 
 env_json={}
 extension_loader = (EXTENSION_LOADER or ".env").rsplit(".",1)[-1]
-execution = 0
 
-Deprecation = deprecated(reason="All methods in module 'libs.path.config_loader' are deprecated and deleted in other version. Please, use the module 'libs.path.loader'"
-                         ,version="1.0.0")
-@Deprecation
+@deprecated
 def env(index:str|list|tuple, default:str|float="") -> str|float:
     match extension_loader:
         case "env":
@@ -22,7 +27,7 @@ def env(index:str|list|tuple, default:str|float="") -> str|float:
         case "json":
             return _manage_case_json(index) or default
 
-@Deprecation
+@deprecated
 def JSON(file:str) -> dict:
     try:
         return json.load(open(file, 'r'))
@@ -31,13 +36,13 @@ def JSON(file:str) -> dict:
     except json.JSONDecodeError as e:
         raise Exception("Error al decodificar JSON: %s" % e)
 
-@Deprecation    
+@deprecated
 def chargeEnv(file:str = "") -> dict:
     from warnings import warn
     warn("This method changed name to 'charge_env'.This function will be removed in a future.", DeprecationWarning)
     charge_env(file)
 
-@Deprecation
+@deprecated
 def charge_env(file:str = "") -> None:
     try:
         project = get_type_of_param(["--run-project", "-rp"]) or ""
@@ -62,7 +67,7 @@ def charge_env(file:str = "") -> None:
     except ValueError as e:
         raise ValueError("Error al cargar el archivo: %s" % e)
 
-@Deprecation    
+@deprecated
 def _manage_case_json(keys:str|list|tuple):
     if isinstance(keys, str):
         pattern = re.compile(r'(\w+)(\[\d+\])?')
@@ -84,7 +89,3 @@ def _manage_case_json(keys:str|list|tuple):
         except (IndexError, AttributeError):
             raise IndexError(f"Not exist key {key} in json {env_json}")
     return result
-
-if execution == 0:
-    charge_env()
-    execution = 1

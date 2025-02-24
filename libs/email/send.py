@@ -3,10 +3,28 @@ import smtplib
 from email import encoders
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
-from email.mime.multipart import MIMEMultipart
 from ..path.utils.file import BaseName
+from framework import FrameworkException
+from email.mime.multipart import MIMEMultipart
 
-def globalEmail(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, cc_email:str=None, cco_email:str=None, files:list = None, mime_type:str="plain"):
+def _global_email(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, cc_email:str=None, cco_email:str=None, files:list = None, mime_type:str="plain"):
+    """Send an email (global configuration).
+
+    Args:
+        mail (smtplib.SMTP): smtplib.SMTP connection.
+        subject (str): Email subject.
+        body (str): Email body.
+        from_email (str): Email from.
+        to_email (str): Email to send.
+        cc_email (str, optional): Email with cc. Defaults to None.
+        cco_email (str, optional): Email with bcc. Defaults to None.
+        files (list, optional): Files to send. Defaults to None.
+        mime_type (str, optional): Type body (html, plain, ...). Defaults to "plain".
+
+    Raises:
+        FrameworkException: In case of error to send.
+        Exception: _description_
+    """
     try:
         message = MIMEMultipart()
         message['From'] = from_email
@@ -37,15 +55,38 @@ def globalEmail(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_ema
         list_emails = f'{message["To"]}, {message["Cc"]}, {message["Bcc"]}'.replace(" ","").split(",")
         list_emails = list(filter(lambda x: x not in "None", list_emails))
         mail.sendmail(from_email, list_emails, message.as_string())
-    except smtplib.SMTPException as e:
-        raise Exception("Error al enviar el correo: %s" % e)
-    except Exception as e:
-        raise Exception("Error al enviar el correo: %s" %e)
+    except (smtplib.SMTPException, Exception) as e:
+        raise FrameworkException("An error ocurred when send the email: " % e)
     
 def onlyText(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, cc_email:str=None, cco_email:str=None, mime_type:str="plain"):
-    globalEmail(mail, subject, body, from_email, to_email, cc_email, cco_email, mime_type=mime_type)
+    """Send an email with only text.
+
+    Args:
+        mail (smtplib.SMTP): smtplib.SMTP connection.
+        subject (str): Email subject.
+        body (str): Email body.
+        from_email (str): Email from.
+        to_email (str): Email to send.
+        cc_email (str, optional): Email with cc. Defaults to None.
+        cco_email (str, optional): Email with bcc. Defaults to None.
+        mime_type (str, optional): Type body (html, plain, ...). Defaults to "plain".
+    """
+    _global_email(mail, subject, body, from_email, to_email, cc_email, cco_email, mime_type=mime_type)
     
 def withFiles(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email:str, files:list|str, cc_email:str="", cco_email:str="", mime_type:str="plain"):
+    """Send an email with text and files.
+
+    Args:
+        mail (smtplib.SMTP): smtplib.SMTP connection.
+        subject (str): Email subject.
+        body (str): Email body.
+        from_email (str): Email from.
+        to_email (str): Email to send.
+        files (list|str, optional): Files to send.
+        cc_email (str, optional): Email with cc. Defaults to None.
+        cco_email (str, optional): Email with bcc. Defaults to None.
+        mime_type (str, optional): Type body (html, plain, ...). Defaults to "plain".
+    """
     if isinstance(files, str):
         files = [{"file_ubication":files, "file_name":BaseName(files)}]
-    globalEmail(mail, subject, body, from_email, to_email, cc_email, cco_email, files, mime_type)
+    _global_email(mail, subject, body, from_email, to_email, cc_email, cco_email, files, mime_type)

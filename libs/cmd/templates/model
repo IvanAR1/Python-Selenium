@@ -7,5 +7,6 @@ from sqlalchemy.orm import (
 )
 
 class {nameModel}(DBManager):
+    """Module instancied by DBManager that use SQLAlchemy"""
     {table_name}
     {engine}
