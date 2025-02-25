@@ -5,9 +5,18 @@ from .WebDriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 T = TypeVar("T")
 class Waits(WebDriver):
+    """Timing to wait an element or other actions.
+
+    Inherince of:
+        WebDriver
+
+    Attributes:
+        ec (EC): Expected conditions.
+    """
     ec:EC = EC
 
     @classmethod
@@ -17,7 +26,7 @@ class Waits(WebDriver):
         This method only needs to be called one time per session. To set the timeout for calls to execute_async_script,
         see set_script_timeout.
 
-        Params:
+        Args:
             time_to_wait:
                 Amount of time to wait (in seconds)
         """
@@ -28,7 +37,7 @@ class Waits(WebDriver):
         """
         Calls the method provided with the driver as an argument until the return value does not evaluate to ``False``.
 
-        Params:
+        Args:
             timeout:
                 Number of seconds before timing out
             method (callable(EC)):
@@ -40,7 +49,7 @@ class Waits(WebDriver):
             T:
                 the result of the last call to method
 
-        raises:
+        Raises:
             TimeoutException (selenium.common.exceptions):
                 if timeout occurs
             Exception:
@@ -48,7 +57,7 @@ class Waits(WebDriver):
         """
         try:
             return WebDriverWait(driver or self.driver, timeout).until(ec, message=errorMessage)
-        except Exception:
+        except (TimeoutException, Exception):
             returnValues = (False, errorMessage)[errorMessage != ""]
             return returnValues
 
@@ -58,7 +67,7 @@ class Waits(WebDriver):
         Delay execution for a given number of seconds. The argument may be a floating point number for
         subsecond precision.
 
-        Params:
+        Args:
             seconds (float):
                 Time in seconds for sleep
         """
@@ -68,10 +77,10 @@ class Waits(WebDriver):
     def displayedElement(self, element:WebElement) -> bool:
         """
         Delay execution for displayed element.
-        Params:
+        Args:
             element (WebElement):
         
-        Return:
+        Returns:
             True:
                 If element is displayed
         """
@@ -87,7 +96,7 @@ class Waits(WebDriver):
         """
         Delay execution of a condition. Stops delay if time runs out
 
-        Params:
+        Args:
             seconds (float):
                 Time in seconds for sleep
             attemts (int):

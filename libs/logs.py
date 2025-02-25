@@ -1,24 +1,29 @@
-import os
 import sys
 import logging
 from datetime import date
 from .path.config_loader import env
 from logging.config import dictConfig
-from .path.path_utils import JoinFile
+from .path.utils.route import JoinPath
 from .cmd.CheckCmd import get_type_of_param
+from .path.utils.folder import CurrentWorkingDirectory, ExistFolder, CreateFolder
 
-def get_log_folder(log_name:str):
-    route:str = "log"
-    project = get_type_of_param("--run-project") or get_type_of_param("-rp")
-    if os.path.exists("%s/log" %( project )):
-        route = "%s/log" %( project )
-    today = date.today()
-    format_date:str = env("DATE_LOG_FORMAT") or "%Y/%m"
-    route += '/%s' %(today.strftime( format_date ))
-    file = JoinFile(os.getcwd(), route)
-    if not os.path.exists(file):
-        os.makedirs(file, exist_ok=True)
-    return "%s/%s.log" %(route, log_name)
+def get_log_folder(log_name:str) -> str:
+    """Get Filename
+
+    Args:
+        log_name (str): Name file of log.
+
+    Returns:
+        str: Final file path.
+    """
+    folder = "%s/log" %( get_type_of_param(["--run-project", "-rp"]) )
+    if not ExistFolder(folder):
+        folder = "log"
+    today_ = date.today().strftime( env("DATE_LOG_FORMAT", "%Y/%m") )
+    folder = JoinPath(CurrentWorkingDirectory(), folder, today_)
+    if not ExistFolder(folder):
+        CreateFolder(folder)
+    return "%s/%s.log" %(folder, log_name)
 
 logging_config = dict(
     version = 1,
@@ -68,7 +73,7 @@ logging_config = dict(
     }
 )
 
-
 dictConfig(logging_config)
-api_logger = logging.getLogger('api_logger')
-batch_process_logger = logging.getLogger('batch_process_logger')
+api_logger:logging.Logger = logging.getLogger('api_logger')
+batch_process_logger:logging.Logger = logging.getLogger('batch_process_logger')
+api_logger.__doc__ = batch_process_logger.__doc__ = logging.Logger.__doc__

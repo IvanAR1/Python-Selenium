@@ -3,7 +3,7 @@ from pathlib import Path
 from itertools import chain
 from shutil import rmtree, move
 from config.framework import PATH_STRICT
-from typing import Callable, List, Union, overload, TypeAlias, Literal
+from typing import Callable, List, Union, overload, TypeAlias, Any, Literal
 
 FormatName: TypeAlias = Literal["only_name", "full_path"]
 
@@ -126,12 +126,12 @@ def DeleteFolder(folder_path:str):
         rmtree(folder_path, ignore_errors=PATH_STRICT)
         return folder_path
 
-def RecursiveFiles(folder_path: str, callback: Callable[[str], bool] = None, patterns: Union[str, List] = "*") -> List[str]:
+def RecursiveFiles(folder_path: str, callback: Callable[[Path], Any] = None, patterns: Union[str, List] = "*") -> List[str]:
     """Find recursive in folder and applied a callback.
 
     Args:
         folder_path (str): Folder path.
-        callback (Callable[[str], bool], optional): Applied an callback to get file. Defaults to None.
+        callback (Callable[[Path], Any], optional): Applied an callback to get file. Defaults to None.
         patterns (Union[str, List], optional): Patterns to filter files. Defaults to "*". If string, separate with "|"
 
     Returns:
@@ -147,3 +147,12 @@ def RecursiveFiles(folder_path: str, callback: Callable[[str], bool] = None, pat
                 continue
             values_returned.append(file)
     return values_returned
+
+def CurrentWorkingDirectory(file_path:str = __file__):
+    """Returned current working directory.
+    Args:
+        file_path (str, None): Specific file working directory. Defaults to __file__.
+    Returns:
+        str: Actual working directory.
+    """
+    return Path(file_path).cwd()

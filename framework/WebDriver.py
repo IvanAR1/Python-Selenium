@@ -13,7 +13,7 @@ class WebDriver():
 	"""
 	Configure and run selenium
 
-	Attributes:
+	Args:
 		webelement (WebElement): 
 			Object that contains all page's manage.
 		browser (str):
@@ -26,19 +26,15 @@ class WebDriver():
 		"""
 		Get the browser options. 
 
-		Params:
+		Args:
 			self (WebDriver): 
 				Instance of class. 
 			browser (str): 
 				Name of the browser (Firefox or Chrome). 
 
 		Returns:
-			FirefoxOptions:
-				Options for Firefox
-			ChromeOptions:
-				Options for Chrome.
-			None:
-				If browser isn't support.
+			(FirefoxOptions|ChromeOptions): Options
+			(None): If browser isn't support.
 		"""
 		options = {
 			"Firefox": webdriver.FirefoxOptions,
@@ -50,20 +46,17 @@ class WebDriver():
 		""" 
 		Get the service for the browser.
 
-		Params:
+		Args:
 			self (WebDriver):
 				Instance of class.
 			browser (str):
 				Name of the browser (Firefox or Chrome).
-			fileWebDriver (str)
+			fileWebDriver (str):
 				Path to the WebDriver executable.
 		Returns:
-			ServiceFirefox:
-				Service of Firefox
-			ServiceChrome:
-				Service of Chrome
-			None:
-				If browser isn't supported
+			(ServiceFirefox|ServiceChrome): Service.
+
+			(None): If browser isn't supported
 		"""
 		services = {
 			"Firefox": ServiceFirefox,
@@ -77,7 +70,7 @@ class WebDriver():
 		"""
 		Set the WebDriver instance.
 
-		Params:
+		Args:
 			self (WebDriver):
 				Instance of class. 
 			options (webdriver.FirefoxOptions or webdriver.ChromeOptions):
@@ -88,11 +81,9 @@ class WebDriver():
 				Name of the browser (Firefox or Chrome).
 
 		Returns:
-			WebDriver:
-				Instance of the WebDriver for Chrome or Firefox
-			None:
-				If browser isn't support.
+			WebDriver: Instance of the WebDriver for Chrome or Firefox.
 			
+			None: If browser is not supported.
 		"""
 		drivers = {
 			"Firefox": webdriver.Firefox,
@@ -108,7 +99,7 @@ class WebDriver():
 		"""
 		Get the configured WebDriver.
 
-		Params:
+		Args:
 			self (WebDriver):
 				Instance of class.
 			fileBnLoc (str):
@@ -116,13 +107,11 @@ class WebDriver():
 			fileWebDriver (str):
 				Path to the WebDriver executable.
 
-		Returns
-			WebDriver:
-				Configured WebDriver instance.
+		Returns:
+			WebDriver: Configured WebDriver instance.
 		
 		Raises:
-			ValueError:
-				If the browser isn't supported.
+			ValueError: If the browser is not supported.
 		"""
 		if self.browser not in ["Firefox", "Chrome"]:
 			raise ValueError(f"El navegador {self.browser} no está soportado")
@@ -142,8 +131,7 @@ class WebDriver():
 		Initialize the Selenium WebDriver instance if it has not already been created.
 
 		Returns:
-			webdriver:
-				The singleton instance of Selenium WebDriver
+			webdriver: The singleton instance of Selenium WebDriver
 		"""
 		if self.driver is None:
 			WebDriver.browser = browser
@@ -155,7 +143,7 @@ class WebDriver():
 		"""
 		Execute the point center
 
-		Params:
+		Args:
 			objs ((Self|list[Self])):
 				Class(es) instance
 		Returns:

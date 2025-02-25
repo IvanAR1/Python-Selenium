@@ -1,6 +1,6 @@
-from libs.cmd.CheckCmd import get_type_of_param
-from libs.cmd.Execute import create_model, create_project, initialize_driver
 from libs.path.loader import charge_env
+from libs.cmd.CheckCmd import get_type_of_param
+from libs.cmd.Execute import create_model, create_project, init
 
 def main():
     """
@@ -20,7 +20,7 @@ def main():
         create_project(createProject)
     elif runProject:
         charge_env()
-        initialize_driver(runProject)
+        init(runProject)
 
 if __name__ == "__main__":
     main()

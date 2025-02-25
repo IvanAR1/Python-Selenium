@@ -11,7 +11,7 @@ def BaseName(file_path: str) -> str:
     """Get basename of file
 
     Args:
-        file_path (str): route with file
+        file_path (str): File path.
 
     Returns:
         str: Return filename with extension
@@ -21,7 +21,7 @@ def BaseName(file_path: str) -> str:
 def FileContainsExtension(file_path:str, extensions:Union[str, list[str]]) -> bool:
     """Check if file contains extension
     Args:
-        folder_path (str): Folder path.
+        file_path (str): File path.
         extensions (Union[str, List[str]]): Patterns to filter files. If string, separate with "|"
 
     Returns:
@@ -34,7 +34,7 @@ def FileContainsExtension(file_path:str, extensions:Union[str, list[str]]) -> bo
 def ManageExtension(file_path: str, action:ActionManageExtension="without", conserved_route:bool = True) -> str:
     """Get filename without extension
     Args:
-        file_path (str): route with file
+        file_path (str): File path.
         action (ActionManageExtension): Action between ('only', 'without')
         conserved_route (bool, optional): If file contains a route, its conserved if value is True. Defaults to True.
 
@@ -53,7 +53,7 @@ def ManageExtension(file_path: str, action:ActionManageExtension="without", cons
 def WithoutExtension(file_path: str, conserved_route = True) -> str:
     """Get filename without extension
     Args:
-        file_path (str): route with file
+        file_path (str): File path.
         conserved_route (bool, optional): If file contains a route, its conserved if value is True. Defaults to True.
 
     Returns:

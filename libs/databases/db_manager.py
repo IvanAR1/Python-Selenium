@@ -14,7 +14,7 @@ class DBManager(DeclarativeBase):
     """
     An class that manages databases using SqlAlchemy: <https://docs.sqlalchemy.org/en/20/>
 
-    Inheritance:
+    Inherince of:
         DeclarativeBase (SqlAlchemy.orm.DeclarativeBase): Base class used for declarative class definitions.
 
     Attributes:

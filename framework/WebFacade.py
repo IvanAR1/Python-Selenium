@@ -7,6 +7,9 @@ class WebFacade(framework.WebDriver):
     Facade for get all or specific method for used with webdriver. 
     Neither class is instanced.
 
+    Inherince of:
+        WebDriver: Browser manager.
+
     Attributes:
         _actions: Actions class
         _waits: Waits class
@@ -22,7 +25,7 @@ class WebFacade(framework.WebDriver):
     @classmethod
     def initialize_instaces(self):
         """ 
-        Initialize and save instances of all classes defined in the framework module. 
+        Initialize and save instances of all classes defined in the framework module.
         """
         for attribute_name in self.__dict__:
             class_module_name = pascalcase(attribute_name.replace("_", ""))
@@ -33,20 +36,17 @@ class WebFacade(framework.WebDriver):
 
     @classmethod
     def get_instance(self, class_name:str)->framework.Waits | framework.Actions | framework.Validate | framework.Change:
-        """ 
+        """
         Get an instance of the specified class. 
 
-        Note:
-            This method doesn't change the attribute, only init and return.
-        Parameters: 
-            class_name (str):
-            The name of the class to retrieve. 
-        Returns: 
-            instance: 
-            An instance of the specified class.
-        Raises: 
-            AttributeError:
-              If not found. 
+        #This method doesn't change the attribute, only init and return.
+
+        Args:
+            class_name (str): The name of the class to retrieve. 
+        Returns:
+            instance: An instance of the specified class.
+        Raises:
+            AttributeError: If not found. 
         """
         attr_name = f"_{lowercase(class_name)}"
         if(attr_name in self.__dict__):
@@ -55,20 +55,17 @@ class WebFacade(framework.WebDriver):
 
     @classmethod
     def __initialize_class_instance(self, class_name:str):
-        """ 
+        """
         Get an instance of the specified class.
 
-        Note:
-            This method is private, please not used.
-        Parameters: 
-            class_name (str):
-            The name of the class to initialize. 
-        Returns: 
-            instance: 
-            The initialized class instance.
+        #This method is private, please not used.
+
+        Args:
+            class_name (str): The name of the class to initialize.
+        Returns:
+            instance: The initialized class instance.
         Raises:
-            ImportError: 
-            If the module is not found.
+            ImportError: If the module is not found.
         """
         class_module_name = pascalcase(class_name)
         if class_module_name in framework.__all__:

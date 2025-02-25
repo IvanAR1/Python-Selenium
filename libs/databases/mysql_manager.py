@@ -1,3 +1,4 @@
+from typing import Union
 from mysql import connector
 from ..path.loader import env
 from mysql.connector.cursor import CursorBase
@@ -28,7 +29,7 @@ class MySQLManager:
             return conn
 
     @staticmethod
-    def query(sql:str, params=(), dictionary:bool=False) -> CursorBase|list|dict|any:
+    def query(sql:str, params=(), dictionary:bool=False) -> Union[CursorBase, list, dict, any]:
         """Execute a SQL Query.
 
         Args:

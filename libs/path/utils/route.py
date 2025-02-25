@@ -1,4 +1,4 @@
-from os import path
+from os import path, getcwd
 from typing import AnyStr
 
 def NormalizePath(route_path: str) -> AnyStr:
@@ -59,7 +59,7 @@ def ExistPath(*routes_path:str):
     """Check if file/folder exists.
 
     Args:
-        routes_path (str): Files or folders path.
+        *routes_path (str): Files or folders path.
 
     Returns:
         bool: If all files / folders exists.
@@ -72,13 +72,12 @@ def ExistPath(*routes_path:str):
 def JoinPath(*routes_path:str) -> str:
     """Join some directories. Recommended finished with a file_name.
 
+    Args:
+        *routes_path (str): Some directories.
     Returns:
         str: End route
     """
-    end_route = ""
-    for route in routes_path:
-        end_route = path.join(route)
-    return end_route
+    return path.join(*routes_path)
 
 def FileContainStr(route_path: str, search: str) -> bool:
     """Search if str of file is contains in a route
