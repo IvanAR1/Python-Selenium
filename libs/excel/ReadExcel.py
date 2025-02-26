@@ -114,7 +114,7 @@ def ManageMultiple(
     Returns:
         List[str]: List of read files.
     """
-    return RecursiveFiles(folder_path, lambda file: Manage(file, manipule_xlsx, min_row, max_cols, **kwargs), ".xlsx|.xls|.csv")
+    return RecursiveFiles(folder_path, lambda file: Manage(str(file), manipule_xlsx, min_row, max_cols, **kwargs), ".xlsx|.xls|.csv")
         
 def ColsInHeader(row:pd.Series, accept_name_cols:list = []) -> List[str]:
     """Check columns names.

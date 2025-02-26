@@ -1,3 +1,4 @@
+"""Manager browser"""
 from .Waits import Waits
 from .Change import Change
 from .Actions import Actions

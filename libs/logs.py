@@ -1,10 +1,11 @@
 import sys
 import logging
 from datetime import date
-from .path.config_loader import env
+from .path.loader import env
 from logging.config import dictConfig
 from .path.utils.route import JoinPath
 from .cmd.CheckCmd import get_type_of_param
+from config.framework import FORMAT_LOG_DATE
 from .path.utils.folder import CurrentWorkingDirectory, ExistFolder, CreateFolder
 
 def get_log_folder(log_name:str) -> str:
@@ -19,7 +20,7 @@ def get_log_folder(log_name:str) -> str:
     folder = "%s/log" %( get_type_of_param(["--run-project", "-rp"]) )
     if not ExistFolder(folder):
         folder = "log"
-    today_ = date.today().strftime( env("DATE_LOG_FORMAT", "%Y/%m") )
+    today_ = date.today().strftime( env("DATE_LOG_FORMAT", FORMAT_LOG_DATE) )
     folder = JoinPath(CurrentWorkingDirectory(), folder, today_)
     if not ExistFolder(folder):
         CreateFolder(folder)

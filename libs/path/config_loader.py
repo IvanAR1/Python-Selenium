@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import inspect
 import warnings
 import functools
 from pathlib import Path
@@ -9,10 +10,21 @@ from .path_utils import AcceptFile, BaseName
 from config.framework import EXTENSION_LOADER
 from libs.cmd.CheckCmd import get_type_of_param
 
+
 def deprecated(func):
+    warnings.simplefilter('always', DeprecationWarning)
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        warnings.warn(f"{func.__name__} and all methods in module 'libs.path.config_loader' are deprecated and deleted in other version. Please, use the module 'libs.path.loader'; version=1.0.0", category=DeprecationWarning, stacklevel=2)
+        frame = inspect.stack()[1]
+        message = (
+            f"{func.__name__} and all methods in module 'libs.path.config_loader' are deprecated and deleted in other version. Please, use the module 'libs.path.loader'; version=1.0.0"
+            f"\nCalled from {frame.filename}, file {frame.lineno}"
+        )
+        warnings.warn(message,
+            category=DeprecationWarning, 
+            stacklevel=2
+        )
+        warnings.simplefilter("default", DeprecationWarning)
         return func(*args, **kwargs)
     return wrapper
 

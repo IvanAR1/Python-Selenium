@@ -126,7 +126,7 @@ def DeleteFolder(folder_path:str):
         rmtree(folder_path, ignore_errors=PATH_STRICT)
         return folder_path
 
-def RecursiveFiles(folder_path: str, callback: Callable[[Path], Any] = None, patterns: Union[str, List] = "*") -> List[str]:
+def RecursiveFiles(folder_path: str, callback: Callable[[Path], Any] = None, patterns: Union[str, List] = "*") -> List[Path]:
     """Find recursive in folder and applied a callback.
 
     Args:
@@ -135,7 +135,7 @@ def RecursiveFiles(folder_path: str, callback: Callable[[Path], Any] = None, pat
         patterns (Union[str, List], optional): Patterns to filter files. Defaults to "*". If string, separate with "|"
 
     Returns:
-        List[str]: List of files, or values returned in callback.
+        List[Path]: List of files, or values returned in callback.
     """
     values_returned = []
     if ExistFolder(folder_path):

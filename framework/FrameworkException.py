@@ -1,9 +1,7 @@
-from selenium.common.exceptions import WebDriverException
-
-class FrameworkException(WebDriverException):
+class FrameworkException(BaseException):
     """Class that Framework uses to raise an exception.
 
     Inherince of:
-        WebDriverException: Default exceptions in WebDriver.
+        BaseException: Common base class for all exceptions.
     """
     pass

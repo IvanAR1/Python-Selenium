@@ -1,18 +1,27 @@
 import os
 import errno
 import shutil
+import inspect
 import pathlib
 import warnings
 import functools
 from typing import Callable, List, Union
 
+warnings.simplefilter('always', DeprecationWarning)
+
 def deprecated(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        warnings.warn(f"{func.__name__} and all methods in module 'libs.path.path_utlis' are deprecated and deleted in other version. Please, use the module 'libs.path.utils'; version=1.0.0",
+        frame = inspect.stack()[1]
+        message = (
+            f"{func.__name__} and all methods in module 'libs.path.path_utils' are deprecated and deleted in other version. Please, use the module 'libs.path.utils'; version=1.0.0"
+            f"\nCalled from {frame.filename}, file {frame.lineno}"
+        )
+        warnings.warn(message,
             category=DeprecationWarning, 
             stacklevel=2
         )
+        warnings.simplefilter("default", DeprecationWarning)
         return func(*args, **kwargs)
     return wrapper
 

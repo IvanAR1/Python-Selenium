@@ -1,10 +1,15 @@
+"""Load charger between [".env" | ".env.json"] by EXTENSION_LOADER into config/framework
+
+Raises:
+    ImportError: If charger is not between [".env" | ".env.json"]
+"""
 from config.framework import EXTENSION_LOADER
 from typing import TypeAlias, Literal
 from ..utils.file import BaseName
 
 ExtensionsLoader:TypeAlias = Literal[".env", ".env.json"]
-extension_loader:ExtensionsLoader = BaseName(EXTENSION_LOADER)
-match extension_loader:
+EXTENSION_LOADER = extension_loader = BaseName(EXTENSION_LOADER)
+match EXTENSION_LOADER:
     case ".env":
         from . import env
         charge_env = env.charge_env

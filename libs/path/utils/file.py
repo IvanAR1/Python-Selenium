@@ -104,7 +104,7 @@ def CopyMoveFile(file_from_path:str, file_to_path:str, action:ActionCopyMove) ->
         Union[ tuple[str, str] | None]: returns files if they're moved. If they aren't created, return None
     """
     folder_to = Path(file_to_path).parent.resolve()
-    if not ExistFile(file_from_path) or folder_to.is_dir():
+    if not ExistFile(file_from_path) or folder_to.is_file():
         return None
     match action:
         case "copy":

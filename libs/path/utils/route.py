@@ -1,35 +1,44 @@
-from os import path, getcwd
+import platform
+from os import path
+from pathlib import Path
 from typing import AnyStr
 
 def NormalizePath(route_path: str) -> AnyStr:
-    """Normalize an route to actual SO
+    """Return the string representation of the path with forward (/) slashes.
     Args:
         route_path (str): A path-like object representing a file system path. 
-
     Returns:
-        str: route normalized 
+        str: route normalized
     """
-    return path.normpath(route_path)
+    if "Win" in platform.system():
+        route_path = rf"{route_path}"
+    return Path(route_path).as_posix()
 
 def ExpandVars(route_path: str) -> AnyStr:
-    """Expande las variables de entorno en la ruta.
+    """Expands vars in route.
 
+    If route contains "~": Expand ~ and ~user constructions. If user or $HOME is unknown, do nothing.
+
+    If not: Expand shell variables of form $var and ${var}. Unknown variables are left unchanged.
+    
     Args:
         route_path (str): A path-like object representing a file system path.
 
     Returns:
         str: route with vars expanded
     """
+    if "~" in route_path:
+        return path.expanduser(route_path)
     return path.expandvars(route_path)
 
 def NormalizePathExpandVars(route_path: str) -> AnyStr:
-    """Normalize route y expand environment vars.
+    """Normalize route y expand vars.
 
     Args:
         route_path (str): A path-like object representing a file system path. 
 
     Returns:
-        str: route normalized and vars expended
+        str: route normalized and vars expanded.
     """
     return NormalizePath(ExpandVars(route_path))
 
@@ -40,9 +49,9 @@ def CheckAbsPath(route_path: str) -> AnyStr:
         route_path (str): A path-like object representing a file system path.
 
     Returns:
-        AnyStr: Route with path absolute.
+        AnyStr: Route with absolute path.
     """
-    return path.abspath(route_path)
+    return str( Path(route_path).absolute() )
 
 def CheckDirnamePath(route_path: str) -> AnyStr:
     """Returns the directory component of a pathname
@@ -53,7 +62,7 @@ def CheckDirnamePath(route_path: str) -> AnyStr:
     Returns:
         str: This method returns a string value which represents the directory name from the specified path.
     """
-    return path.dirname(route_path)
+    return Path(route_path).parent
 
 def ExistPath(*routes_path:str):
     """Check if file/folder exists.
@@ -65,7 +74,7 @@ def ExistPath(*routes_path:str):
         bool: If all files / folders exists.
     """
     for route in routes_path:
-        if not path.exists(route):
+        if not Path(route).exists():
             return False
     return True
 
@@ -77,7 +86,7 @@ def JoinPath(*routes_path:str) -> str:
     Returns:
         str: End route
     """
-    return path.join(*routes_path)
+    return str( Path(routes_path[0]).joinpath(*routes_path[1:]) )
 
 def FileContainStr(route_path: str, search: str) -> bool:
     """Search if str of file is contains in a route

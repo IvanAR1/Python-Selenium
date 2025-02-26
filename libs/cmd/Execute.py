@@ -3,7 +3,6 @@ import sys
 import importlib
 from pathlib import Path
 from framework import WebDriver
-from libs.path.path_utils import ExistPath
 from libs.path.utils.route import CheckAbsPath
 from libs.cmd.CheckCmd import get_type_of_param
 from libs.path.utils.file import ExistFile, CreateFile
@@ -22,7 +21,7 @@ def init(path_project:str|None):
         option_ni = get_type_of_param(["--not-init", "-ni"])
         if option_ni is None:
             WebDriver.initialize_driver(env("BROWSER"))
-    if isinstance(path_project, str) and ExistPath(path_project):
+    if isinstance(path_project, str) and ExistFolder(path_project):
         if ExistFile(path_project + f"/{extension_loader}"):
             charge_env(path_project + f"/{extension_loader}")
         try:
