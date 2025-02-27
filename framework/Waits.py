@@ -1,13 +1,12 @@
 import time
-from typing import TypeVar
-from typing import Callable
 from .WebDriver import WebDriver
+from typing import Callable, Union
+from selenium.webdriver.support.wait import T
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-T = TypeVar("T")
 class Waits(WebDriver):
     """Timing to wait an element or other actions.
 
@@ -33,7 +32,7 @@ class Waits(WebDriver):
         self.driver.implicitly_wait(time_to_wait)
 
     @classmethod
-    def explicitly(self, timeout:float, ec:EC, errorMessage:str = "", driver:WebDriver|WebElement = None) -> T:
+    def explicitly(self, timeout:float, ec:EC, errorMessage:str = "", driver:WebDriver|WebElement = None) -> Union[WebElement, T]:
         """
         Calls the method provided with the driver as an argument until the return value does not evaluate to ``False``.
 
@@ -46,7 +45,7 @@ class Waits(WebDriver):
                 optional message for TimeoutException | Exception
 
         Returns:
-            T:
+            WebElement|out:
                 the result of the last call to method
 
         Raises:

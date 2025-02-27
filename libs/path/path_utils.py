@@ -7,9 +7,8 @@ import warnings
 import functools
 from typing import Callable, List, Union
 
-warnings.simplefilter('always', DeprecationWarning)
-
 def deprecated(func):
+    warnings.simplefilter('always', DeprecationWarning)
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         frame = inspect.stack()[1]

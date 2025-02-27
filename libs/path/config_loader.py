@@ -10,7 +10,6 @@ from .path_utils import AcceptFile, BaseName
 from config.framework import EXTENSION_LOADER
 from libs.cmd.CheckCmd import get_type_of_param
 
-
 def deprecated(func):
     warnings.simplefilter('always', DeprecationWarning)
     @functools.wraps(func)

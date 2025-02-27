@@ -15,9 +15,11 @@ class Actions(WebDriver, By):
 
     Attributes:
         keys (Keys): Set of special keys codes.
+        web_element (WebElement): Use for typing with WebElement
     """
 
     keys:Keys = Keys
+    web_element = WebElement
 
     @property
     def actions_chains(self:Self) -> property:
