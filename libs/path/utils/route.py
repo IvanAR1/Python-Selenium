@@ -1,4 +1,3 @@
-import platform
 from os import path
 from pathlib import Path
 from typing import AnyStr
@@ -10,9 +9,7 @@ def NormalizePath(route_path: str) -> AnyStr:
     Returns:
         str: route normalized
     """
-    if "Win" in platform.system():
-        route_path = rf"{route_path}"
-    return Path(route_path).as_posix()
+    return str(Path(route_path).resolve())
 
 def ExpandVars(route_path: str) -> AnyStr:
     """Expands vars in route.
@@ -53,18 +50,18 @@ def CheckAbsPath(route_path: str) -> AnyStr:
     """
     return str( Path(route_path).absolute() )
 
-def CheckDirnamePath(route_path: str) -> AnyStr:
+def CheckDirnamePath(route_path: str) -> Path:
     """Returns the directory component of a pathname
 
     Args:
         route_path (str): A path-like object representing a file system path. 
 
     Returns:
-        str: This method returns a string value which represents the directory name from the specified path.
+        Path: The logical parent of the path.
     """
     return Path(route_path).parent
 
-def ExistPath(*routes_path:str):
+def ExistPath(*routes_path:str) -> bool:
     """Check if file/folder exists.
 
     Args:
@@ -86,7 +83,7 @@ def JoinPath(*routes_path:str) -> str:
     Returns:
         str: End route
     """
-    return str( Path(routes_path[0]).joinpath(*routes_path[1:]) )
+    return str(Path(routes_path[0]).joinpath(*routes_path[1:]))
 
 def FileContainStr(route_path: str, search: str) -> bool:
     """Search if str of file is contains in a route

@@ -126,12 +126,12 @@ def DeleteFolder(folder_path:str):
         rmtree(folder_path, ignore_errors=PATH_STRICT)
         return folder_path
 
-def RecursiveFiles(folder_path: str, callback: Callable[[Path], Any] = None, patterns: Union[str, List] = "*") -> List[Path]:
+def RecursiveFiles(folder_path: str, callback: Callable[[Path], Union[Path, Any]] = None, patterns: Union[str, List] = "*") -> List[Path]:
     """Find recursive in folder and applied a callback.
 
     Args:
         folder_path (str): Folder path.
-        callback (Callable[[Path], Any], optional): Applied an callback to get file. Defaults to None.
+        callback (Callable[[Path], Path|Any], optional): Applied an callback to get file. Defaults to None.
         patterns (Union[str, List], optional): Patterns to filter files. Defaults to "*". If string, separate with "|"
 
     Returns:
@@ -142,10 +142,10 @@ def RecursiveFiles(folder_path: str, callback: Callable[[Path], Any] = None, pat
         for file in GetFilesInFolder(folder_path, patterns):
             if isinstance(callback, Callable):
                 value_returned = callback(file)
-                if value_returned:
-                    values_returned.append(value_returned)
-                continue
-            values_returned.append(file)
+            else:
+                value_returned = file
+            if value_returned:
+                values_returned.append(value_returned)
     return values_returned
 
 def CurrentWorkingDirectory(file_path:str = __file__):

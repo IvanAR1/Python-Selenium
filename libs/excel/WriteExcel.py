@@ -1,8 +1,10 @@
 import pandas as pd
 from framework import FrameworkException
-from libs.path.utils.file import FileContainsExtension
+from config.framework import EXCEL_ENGINE
+from typing import Dict, Any, Union, List
+from libs.path.utils.file import FileContainsExtension, DeleteFile
 
-def OverwriteSheetOnlySheet(file:str, data:dict|list|pd.DataFrame, index:bool = False, **kwargs):
+def OverwriteSheetOnlySheet(file:str, data:dict|list|pd.DataFrame=None, index:bool = False, **kwargs):
     """Save file with one sheet (or csv).
 
     Args:
@@ -13,23 +15,27 @@ def OverwriteSheetOnlySheet(file:str, data:dict|list|pd.DataFrame, index:bool = 
     """
     df = _process_data(data)
     if FileContainsExtension(file, ".xlsx|.xls"):
-        with pd.ExcelWriter(file, mode='a', if_sheet_exists='replace') as writer:
-            df.to_excel(writer, index=index, **kwargs)
+        DeleteFile(file)
+        writer = pd.ExcelWriter(file, engine=EXCEL_ENGINE)
+        df.to_excel(writer, index=index, **kwargs)
+        writer.close()
     elif FileContainsExtension(file, ".csv"):
         df.to_csv(file, index=index, **kwargs)
 
-def OverwriteSheetManySheet(file:str, sheets_data:dict|list, **kwargs):
+def OverwriteSheetManySheet(file:str, data:Union[Dict[List, Any]], index:bool=False, **kwargs):
     """Save file with many sheets
 
     Args:
         file (str): File path
-        sheets_data (dict | list): Data sheets.
+        sheets_data (list[dict]): Data sheets.
+        index (bool, optional): Write row names (index). Defaults to False.
         **kwargs: some options in df.to_excel.
     """
-    with pd.ExcelWriter(file, mode='a', if_sheet_exists='replace') as writer:
-        for sheetName, data in sheets_data.items():
-            df = _process_data(data)
-            df.to_excel(writer, sheet_name=sheetName, index=False, **kwargs)
+    DeleteFile(file)
+    writer = pd.ExcelWriter(file, engine=EXCEL_ENGINE)
+    for sheetName, sheetData in data.items():
+        _process_data(sheetData).to_excel(writer, sheetName, index=index, **kwargs)    
+    writer.close()
     
 def _process_data(data:dict|list|pd.DataFrame) -> pd.DataFrame:
     """Check type of data.

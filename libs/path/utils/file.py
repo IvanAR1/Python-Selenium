@@ -6,6 +6,7 @@ from typing import Union, TypeAlias, Literal
 
 ActionCopyMove:TypeAlias = Literal["copy","move"]
 ActionManageExtension:TypeAlias = Literal["only", "without"]
+ActionReadFile:TypeAlias = Literal["text", "bytes"]
 
 def BaseName(file_path: str) -> str:
     """Get basename of file
@@ -76,6 +77,32 @@ def ExistFile(*files_path: str) -> bool:
             return False
     return True
 
+def GetFileContent(file_from:str, mode:ActionReadFile="text", **kwargs:str|None) -> Union[str,bytes, None]:
+    """Get contents from file.
+
+    Args:
+        file_from (str): File path.
+        mode (ActionReadFile, optional): Mode to read between (text|bytes). Defaults to "text".
+        **kwargs (str|None): some options in pathlib.Path.read_text
+
+    Raises:
+        TypeError: If mode to read file is not between [text|bytes]
+
+    Returns:
+        Union[str,bytes]: File readed.
+        
+        None: File not exists.
+    """
+    if ExistFile(file_from):
+        file_from:Path = Path(file_from)
+        match mode:
+            case "text":
+                return file_from.read_text(**kwargs)
+            case "bytes":
+                return file_from.read_bytes()
+            case _:
+                raise TypeError("Read file mode not accepted.")
+            
 def CreateFile(file_path:str, strContent:str = "", mode:TypeAlias = "w", **kwargs) -> None:
     """Create an file and write text
 
