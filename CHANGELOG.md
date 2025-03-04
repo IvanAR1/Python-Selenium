@@ -2,7 +2,7 @@
 
 | Commit  | Changes |
 | ------------- | ------------- |
-| [d7b0758](https://github.com/IvanAR1/Python-Selenium/tree/d7b07583fb89332f6cf4ba0dc7ed7b70d2aa8916)  | Solved bug in save excel (libs/excel/WriteExcel) and alter typing (libs/path/utils/{file, folder, route}, framework/Waits) |
+| [853a6e9](https://github.com/IvanAR1/Python-Selenium/tree/853a6e920ed8368c4ba1768fadf8c3d20100043e)  | Solved bug in save excel (libs/excel/WriteExcel) and alter typing (libs/path/utils/{file, folder, route}, framework/Waits) |
 | [3fdfe02](https://github.com/IvanAR1/Python-Selenium/tree/3fdfe02440d7adfbf1987bc1394142ac9ee2f418)  | Add attributes (framework/Actions), alter typing in explicity (framework/Waits) and alter order code in deprecates (libs/path/{*.py}) |
 | [c147ce3](https://github.com/IvanAR1/Python-Selenium/tree/c147ce3377c127386c5d0cf7e8e8e95c0c688591)  | Add completed docs and fixed present bugs (libs) |
 | [e68dec1](https://github.com/IvanAR1/Python-Selenium/tree/e68dec17e3c4e49d5eba0e58279e95bb528c8f23)  | Add docs (libs/{excel,path,logs}, framework/{Actions, Change, FrameworkException, Validate, Waits, WebDriver, WebFacade}, manage) |
