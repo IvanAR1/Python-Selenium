@@ -3,15 +3,15 @@ import email.message
 import poplib
 import imaplib
 import mimetypes
-from typing import Callable
 from ..path.loader import env
+from typing import Callable, List
 
 #Filters with imaplib.IMAP4
 FROM = '(FROM "%s")'
 SINCE_BEFORE='(SINCE "%s" BEFORE "%s")'
 SUBJECT='(SUBJECT "%s")'.encode("ASCII", 'ignore').decode('ASCII')
 
-def downloadAttachments(m:imaplib.IMAP4|poplib.POP3, filter:str="", select:str = "inbox", outputdir:str = env("OUTPUT_DIR"), filter_case_pop3:Callable[[email.message.EmailMessage],bool]=None):
+def downloadAttachments(m:imaplib.IMAP4|poplib.POP3, filter:str="", select:str = "inbox", outputdir:str = env("OUTPUT_DIR"), filter_case_pop3:Callable[[email.message.Message],bool]=None):
     """Download attachments from emails based on a filter.
 
     Args:
@@ -19,7 +19,7 @@ def downloadAttachments(m:imaplib.IMAP4|poplib.POP3, filter:str="", select:str =
         filter (str, optional): Search filter to emails (recommended use variable FROM|SINCE_BEFORE|SUBJECT if m is instance of imaplib.IMAP4). Defaults to ""
         select (str, optional): Folder to select. Defaults to "inbox".
         outputdir (str, optional): Output directory to save file attachments. Defaults to env("OUTPUT_DIR").
-        filter_case_pop3 (Callable[[email.message.EmailMessage],bool], optional): Function to filter emails with poplib.POP3. Defaults to None.
+        filter_case_pop3 (Callable[[email.message.Message], bool], optional): Function to filter emails with poplib.POP3. Defaults to None.
 
     Raises:
         ValueError: If m is not imaplib.IMAP4 | poplib.POP3. Also if filter_case_pop3 is not callable and m is poplib.POP3.
@@ -38,12 +38,15 @@ def downloadAttachments(m:imaplib.IMAP4|poplib.POP3, filter:str="", select:str =
         _download_attachments_in_email(m, email_id, outputdir)
     
 
-def _filter_emails_pop3(m:poplib.POP3, filter_func:Callable):
-    """Filter emails for poplib.POP3 connection.
+def _filter_emails_pop3(m:poplib.POP3, filter_func:Callable[[email.message.Message], bool]) -> List:
+    """Filter emails by poplib.POP3 connection.
 
     Args:
         m (poplib.POP3): poplib.POP3 connection.
-        filter_func (Callable): Function to filter emails.
+        filter_func (Callable[[email.message.Message], bool]): Function to filter emails.
+    
+    Returns:
+        List: an emails list
     """
     email_ids = []
     for i in range(1, len(m.list()[1]) + 1):

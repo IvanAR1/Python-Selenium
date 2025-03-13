@@ -1,6 +1,6 @@
 import time
 from .WebDriver import WebDriver
-from typing import Callable, Union, List
+from typing import Callable, Union, List, Literal
 from selenium.webdriver.support.wait import T
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
@@ -37,22 +37,18 @@ class Waits(WebDriver):
         Calls the method provided with the driver as an argument until the return value does not evaluate to ``False``.
 
         Args:
-            timeout:
+            timeout (float):
                 Number of seconds before timing out
-            method (callable(EC)):
-                callable
-            message:
-                optional message for TimeoutException | Exception
+            ec (EC):
+                Call to method by EC.
+            errorMessage (str, optional):
+                Optional message for TimeoutException. Defaults to ""
+            driver (WebDriver | WebElement, optional): 
+                Change driver if necessary. Defaults to None.
 
         Returns:
             WebElement|List[WebElement]|out:
-                the result of the last call to method
-
-        Raises:
-            TimeoutException (selenium.common.exceptions):
-                if timeout occurs
-            Exception:
-                any error ocurred
+                The result of the last call to method.
         """
         try:
             return WebDriverWait(driver or self.driver, timeout).until(ec, message=errorMessage)
@@ -73,14 +69,14 @@ class Waits(WebDriver):
         time.sleep(seconds)
     
     @classmethod
-    def displayedElement(self, element:WebElement) -> bool:
+    def displayedElement(self, element:WebElement) -> Literal[True]:
         """
         Delay execution for displayed element.
         Args:
-            element (WebElement):
+            element (WebElement): 
         
         Returns:
-            True:
+            Literal[True]:
                 If element is displayed
         """
         while True:
@@ -91,17 +87,17 @@ class Waits(WebDriver):
                 return True
 
     @classmethod
-    def forAttempt(self, seconds:float, attempts:int, condition:bool|Callable) -> bool:
+    def forAttempt(self, seconds:float, attempts:int, condition:bool|Callable[[],bool]) -> bool:
         """
         Delay execution of a condition. Stops delay if time runs out
 
         Args:
             seconds (float):
                 Time in seconds for sleep
-            attemts (int):
+            attempts (int):
                 Attempts to fulfill the condition
-            condition (bool):
-                Condition
+            condition (bool|Callable[[], bool]):
+                Condition that must be met.
         """
         while attempts > 0:
             response = condition if isinstance(condition, bool) else condition()

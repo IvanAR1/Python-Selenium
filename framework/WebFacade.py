@@ -4,7 +4,7 @@ from stringcase import lowercase, pascalcase
 
 class WebFacade(framework.WebDriver):
     """
-    Facade for get all or specific method for used with webdriver. 
+    Facade for get some specific methods to use with WebDriver. 
     Neither class is instanced.
 
     Inherince of:
@@ -46,7 +46,7 @@ class WebFacade(framework.WebDriver):
         Returns:
             instance: An instance of the specified class.
         Raises:
-            AttributeError: If not found. 
+            AttributeError: If class not found. 
         """
         attr_name = f"_{lowercase(class_name)}"
         if(attr_name in self.__dict__):

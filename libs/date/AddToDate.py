@@ -1,16 +1,13 @@
-import dateutil
 import calendar
-import dateutil.parser
-from typing import Literal
 from config.framework import FORMAT_DATE
 from datetime import datetime, timedelta, date
 
-def add_global(date_:str|datetime, format_ = FORMAT_DATE, **kwargs) -> datetime:
+def add_global(date_:str|datetime, format_:str = FORMAT_DATE, **kwargs) -> datetime:
     """Add specific type of date/time to datetime using timedelta.
 
     Args:
         date_ (str | datetime): Datetime current.
-        format_ (_type_, optional): Specific a format. Defaults to config.framework.FORMAT_DATE.
+        format_ (str, optional): Specific a format. Defaults to config.framework.FORMAT_DATE.
         **kwargs: Additional keyword arguments to timedelta.
 
     Returns:
@@ -113,19 +110,3 @@ def add_years(date_:datetime, years:int) -> datetime:
         datetime: Datetime formated.
     """
     return date_.replace(year = date_.year + years)
-
-def convert_str_date(date_:str, fuzzy=False, **kwargs) -> datetime|Literal[False]:
-    """Convert str to date
-
-    Args:
-        date_ (str): Datetime str current.
-        fuzzy (bool, optional): Whether to allow fuzzy parsing, allowing for string like "Today is January 1, 2047 at 8:21:00AM". Defaults to False.
-        **kwargs: Additional keyword arguments to dateutil.parser.parse.
-
-    Returns:
-        datetime|Literal[False]: Datetime. False in case of Exception. 
-    """
-    try: 
-        return dateutil.parser.parse(date_, fuzzy=fuzzy)
-    except Exception:
-        return False

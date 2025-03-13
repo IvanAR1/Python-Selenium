@@ -1,5 +1,5 @@
+from typing import Self, List
 from .WebDriver import WebDriver
-from typing import Self, List, Any
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -94,15 +94,15 @@ class Actions(WebDriver, By):
         return element
     
     @classmethod
-    def clickByScript(self:Self, element:WebDriver) -> Any:
+    def clickByScript(self:Self, element:WebElement) -> WebElement:
         """Excecute a script with element given.
 
         Args:
             self (Self): Actions class
-            element (WebDriver): Found element.
+            element (WebElement): Found element.
 
         Returns:
-            Any: Element given.
+            WebElement: Element given.
         """
         self.driver.execute_script("arguments[0].click();", element)
         return element
@@ -133,7 +133,7 @@ class Actions(WebDriver, By):
 
     @classmethod
     def sendKeys(self:Self, element:WebElement, *keys:str|Keys) -> None:
-        """Send 
+        """Simulates typing into the element. 
 
         Args:
             self (Self): Actions class.
@@ -147,7 +147,7 @@ class Actions(WebDriver, By):
                 element.send_keys(*keys)
 
     @classmethod
-    def scrollElement(self:Self, element:WebDriver) -> Any:
+    def scrollElement(self:Self, element:WebDriver) -> WebElement:
         """Scroll to element. Similar with moveToElement, but this is done by script.
 
         Args:
@@ -155,14 +155,14 @@ class Actions(WebDriver, By):
             element (WebDriver): Found element.
 
         Returns:
-            Any: Some
+            WebElement: Element given.
         """
         self.driver.execute_script("arguments[0].scrollIntoView();", element)
         return element
 
     @classmethod
     def selectOptionByValue(self:Self, element:WebElement, value:str) -> WebElement|None:
-        """Select in <select> tag by value attribute.
+        """Select in <option> tag by value attribute.
 
         Args:
             self (Self): Actions class.
@@ -182,7 +182,7 @@ class Actions(WebDriver, By):
     
     @classmethod
     def selectOptionByText(self:Self, element:WebElement, text:str):
-        """Select in <select> tag by text.
+        """Select in <option> tag by text.
 
         Args:
             self (Self): Actions class.

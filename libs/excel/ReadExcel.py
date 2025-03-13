@@ -101,7 +101,7 @@ def ManageMultiple(
         min_row:int=1, 
         max_cols:int=None, 
         **kwargs
-    ) -> List[str]:
+    ) -> List[Path|Any]:
     """Read files in a folder
 
     Args:
@@ -112,7 +112,7 @@ def ManageMultiple(
         **kwargs: Some options in pd.read_excel|pd.read_csv function.
 
     Returns:
-        List[str]: List of read files.
+        List[Path|Any]: List of read files.
     """
     return RecursiveFiles(folder_path, lambda file: Manage(str(file), manipule_xlsx, min_row, max_cols, **kwargs), ".xlsx|.xls|.csv")
         

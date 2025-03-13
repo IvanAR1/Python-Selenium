@@ -1,5 +1,6 @@
+from typing import Self
+from framework import Actions
 from selenium.webdriver.common.by import By
-from framework import Actions, WebDriver
 
 class Validate(Actions):
     """Validate if element is on browser
@@ -8,11 +9,11 @@ class Validate(Actions):
         Actions: Take an action on browser.
     """
     @classmethod
-    def Xpath(self, xpath)->bool:
+    def Xpath(self:Self, xpath:str)->bool:
         """Validate if element exist by xpath. 
 
         Args:
-            xpath (_type_): Element to find by xpath. 
+            xpath (str): Element to find by xpath. 
 
         Returns:
             bool: If element is found.
@@ -20,11 +21,11 @@ class Validate(Actions):
         return self.Any(self.XPATH, xpath)
 
     @classmethod
-    def Id(self, id)->bool:
+    def Id(self:Self, id:str)->bool:
         """Validate if element exist by ID. 
 
         Args:
-            xpath (_type_): Element to find by id. 
+            id (str): Element to find by id. 
 
         Returns:
             bool: If element is found.
@@ -32,12 +33,12 @@ class Validate(Actions):
         return self.Any(self.ID, id)
 
     @classmethod
-    def Any(self, By:By, element:WebDriver)->bool:
+    def Any(self:Self, By:By|str, element:str)->bool:
         """Validate if element exist with By strategy.
 
         Args:
-            By (By): By strategy.
-            element (WebDriver): Found element.
+            By (By|str): By strategy.
+            element (str): Element to find.
 
         Returns:
             bool: If element is found.

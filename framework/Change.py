@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 from .Waits import Waits
 from .Actions import Actions
 from .WebDriver import WebDriver
@@ -12,23 +12,27 @@ class Change(Actions, Waits):
         Waits: Waits in specific moment.
     """
     @classmethod
-    def toFrame(self, element:WebDriver, time:float) -> None:
+    def toFrame(self, element:WebElement, time:float) -> Callable[[WebDriver],bool]:
         """Switch to specific frame tag.
 
         Args:
             self: Change class.
-            element (WebDriver): Found element.
+            element (WebElement): Found element.
             time (float): Max time to change.
+
+        Returns:
+            Callable[[WebDriver],bool]: If the driver switched to frame tag.
         """
-        self.explicitly(time, self.ec.frame_to_be_available_and_switch_to_it(element))
+        return self.explicitly(time, self.ec.frame_to_be_available_and_switch_to_it(element))
 
     @classmethod
-    def nextPage(self, element:WebElement|Tuple[str, str], seconds:float, time_sleep:float=0) -> None:
+    def nextPage(self, element:WebElement|Tuple[str, str], seconds:float=0, time_sleep:float=0) -> None:
         """Change to next page where driver is working when click on element.
 
         Args:
+            self: Change class.
             element (WebElement | Tuple[str, str]): Found element if WebElement. Waits with element_to_be_clickable if Tuple
-            seconds (float): Number of seconds before timing out (if element is a tuple).
+            seconds (float, optional): Number of seconds before timing out (if element is a tuple). Defaults to 0.
             time_sleep (float, optional): Time to sleep and wait to click on element (if element is a tuple). Defaults to 0.
         """
         actualTabs = set(self.driver.window_handles)
@@ -42,6 +46,7 @@ class Change(Actions, Waits):
         newWindow = (set(self.driver.window_handles) - actualTabs).pop()
         self.driver.switch_to.window(newWindow)
 
+    @classmethod
     def defaultContent(self) -> None:
-        """Change to default content."""
+        """Switch focus to the default frame."""
         self.driver.switch_to.default_content()

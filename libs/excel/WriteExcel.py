@@ -13,9 +13,9 @@ def OverwriteSheetOnlySheet(file:str, data:dict|list|pd.DataFrame=None, index:bo
         index (bool, optional): Write row names (index). Defaults to False.
         **kwargs: some options in df.to_excel|df.to_csv
     """
+    DeleteFile(file)
     df = _process_data(data)
     if FileContainsExtension(file, ".xlsx|.xls"):
-        DeleteFile(file)
         writer = pd.ExcelWriter(file, engine=EXCEL_ENGINE)
         df.to_excel(writer, index=index, **kwargs)
         writer.close()
@@ -40,7 +40,7 @@ def OverwriteSheetManySheet(file:str, data:Union[Dict[List, Any]], index:bool=Fa
 def _process_data(data:dict|list|pd.DataFrame) -> pd.DataFrame:
     """Check type of data.
 
-    Private:
+    ### Private:
         Not uses this function.
 
     Args:

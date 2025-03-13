@@ -72,11 +72,11 @@ class DBManager(DeclarativeBase):
 
         Args:
             driver (str, optional): Database driver. Defaults to ( env("DB_CONNECTION") or env("DB_DRIVER") ).
-            host (_type_, optional): Database host. Defaults to env("DB_HOST").
-            port (_type_, optional): Database port. Defaults to env("DB_PORT").
-            username (_type_, optional): Database username. Defaults to env("DB_USERNAME").
-            password (_type_, optional): Database password. Defaults to env("DB_PASSWORD").
-            database (_type_, optional): Database name. Defaults to env("DB_DATABASE").
+            host (str, optional): Database host. Defaults to env("DB_HOST").
+            port (str, optional): Database port. Defaults to env("DB_PORT").
+            username (str, optional): Database username. Defaults to env("DB_USERNAME").
+            password (str, optional): Database password. Defaults to env("DB_PASSWORD").
+            database (str, optional): Database name. Defaults to env("DB_DATABASE").
         """
         if not cls.urls.get(database):
             cls.urls[database] = URL.create(

@@ -6,24 +6,24 @@ from libs.logs import api_logger
 from typing import Callable, Union, List
 from framework import FrameworkException
 
-def excel_handle_popup(windows_titles:list, condition_while:Callable, button_to_click:Callable):
-    """Handles excel popups dynamically until told to sop.
+def excel_handle_popup(windows_titles:list, condition_while:Callable[[], bool], button_to_click:Callable[[], bool]):
+    """Handles excel popups dynamically until told to stop.
 
     Args:
         windows_titles (list): Popups names list.
-        condition_while (Callable): Condition that while validate if true.
-        button_to_click (Callable): Action to click.
+        condition_while (Callable[[], bool]): Condition that while validate if true.
+        button_to_click (Callable[[], bool]): Action to click.
 
     Raises:
         FrameworkException: If 'condition_while' or 'button_to_click' is not Callable or others Exceptions.
     """
     pythoncom.CoInitialize()
     try:
-        api_logger.info(f"\rBuscando ventanas {windows_titles}")
+        api_logger.info(f"\Searching windows {windows_titles}")
         while condition_while():
             for win_title in windows_titles:
                 if autoit.win_exists(win_title):
-                    api_logger.info(f"\nVentana '{win_title}' encontrada.")
+                    api_logger.info(f"\Window '{win_title}' found.")
                     autoit.win_activate(win_title)
                     button_to_click()
     except (TypeError, Exception) as e:

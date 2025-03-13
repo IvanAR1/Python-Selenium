@@ -1,11 +1,11 @@
-from typing import Union
 from mysql import connector
 from ..path.loader import env
+from typing import Union, Self
 from mysql.connector.cursor import CursorBase
 
 class MySQLManager:
     """
-    A class that manage ony MySQL databases.
+    A class that manage only MySQL databases.
 
     Attributes:
         connection (connector.MySQLConnection): Active connection.
@@ -13,8 +13,16 @@ class MySQLManager:
     connection:connector.MySQLConnection = None
 
     @staticmethod
-    def conn()->connector.MySQLConnection:
+    def conn(self:Self)->connector.MySQLConnection:
         """Create a connection to MySQL database.
+
+        ### ENVIRON PARAMETERS:
+            DB_CONNECTION: Database driver.
+            DB_HOST: Database host.
+            DB_PORT: Database port.
+            DB_DATABASE: Database username.
+            DB_USERNAME: Database password.
+            DB_PASSWORD: Database name.
 
         Returns:
             connector.MySQLConnection: Connection to MySQL database.
@@ -29,13 +37,13 @@ class MySQLManager:
             return conn
 
     @staticmethod
-    def query(sql:str, params=(), dictionary:bool=False) -> Union[CursorBase, list, dict, any]:
+    def query(self:Self, sql:str, params:tuple=(), dictionary:bool=False) -> Union[CursorBase, list, dict, any]:
         """Execute a SQL Query.
 
         Args:
             sql (str): SQL Query string.
             params (tuple, optional): Parameters for the SQL query. Defaults to ().
-            dictionary (bool, optional): _description_. Defaults to False.
+            dictionary (bool, optional): Whether to return results as dictionaries. Defaults to False.
 
         Returns:
             CursorBase|list|dict|any: Query results.
@@ -46,21 +54,21 @@ class MySQLManager:
             return cursor
 
     @staticmethod
-    def begin():
+    def begin(self:Self):
         """Begins a new transaction.
         """
         if MySQLManager.connection is not None:
             MySQLManager.connection.start_transaction()
 
     @staticmethod
-    def commit():
+    def commit(self:Self):
         """Commits the current transaction.
         """
         if MySQLManager.connection is not None:
             MySQLManager.connection.commit()
 
     @staticmethod
-    def rollback():
+    def rollback(self:Self):
         """Rolls back the current transaction.
         """
         if MySQLManager.connection is not None:

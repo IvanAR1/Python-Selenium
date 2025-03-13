@@ -16,8 +16,12 @@ def init(path_project:str|None):
 
     Args:
         path_project (str | None): Where's the project
+
+    Raises:
+        ImportError: if module or function 'execute_from_command_line' not exists.
     """
     def check_initialize():
+        """Driver starts if --not-init param is not used."""
         option_ni = get_type_of_param(["--not-init", "-ni"])
         if option_ni is None:
             WebDriver.initialize_driver(env("BROWSER"))

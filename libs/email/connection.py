@@ -17,7 +17,7 @@ def smtp(
     """Generate a smtplib.SMTP connection.
 
     Args:
-        host (str, optional): Email provider host. Defaults to env("SMTP_HOST").
+            
         port (int, optional): Email provider port. Defaults to env("SMTP_PORT").
         user (str, optional): Email address. Defaults to env("MAIL_USER").
         pwd (str, optional): Email address password. Defaults to env("MAIL_PWD").

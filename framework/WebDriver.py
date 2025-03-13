@@ -1,7 +1,8 @@
 import os
 import platform
 import win32com.client
-from typing import Self
+from typing import Self, List, Any
+from types import FunctionType
 from selenium import webdriver
 from libs.path.loader import env
 from selenium.webdriver.remote import webdriver as web
@@ -102,10 +103,10 @@ class WebDriver():
 		Args:
 			self (WebDriver):
 				Instance of class.
-			fileBnLoc (str):
-				Path to the browser binary.
-			fileWebDriver (str):
-				Path to the WebDriver executable.
+			fileBnLoc (str, optional):
+				Path to the browser binary. Defaults to env('BINARY_PATH').
+			fileWebDriver (str, optional):
+				Path to the WebDriver executable. Defaults to env('DRIVER_PATH').
 
 		Returns:
 			WebDriver: Configured WebDriver instance.
@@ -130,6 +131,12 @@ class WebDriver():
 		"""
 		Initialize the Selenium WebDriver instance if it has not already been created.
 
+		Args:
+			self (WebDriver):
+				Instance of class.
+			browser (str, optional):
+				Name of the browser (Firefox or Chrome). Defaults to env("BROWSER").
+
 		Returns:
 			webdriver: The singleton instance of Selenium WebDriver
 		"""
@@ -138,17 +145,24 @@ class WebDriver():
 			WebDriver.driver = self.driver = WebDriver().getDriver()
 		return self.driver
 	
-	def factoryMain(*objs:Self):
-		
+	def factoryMain(*objs:Self) -> List[Any]:
 		"""
 		Execute the point center
 
 		Args:
-			objs ((Self|list[Self])):
-				Class(es) instance
+			*objs (Self): Class(es) instance
 		Returns:
-			any:
-				Anything that you requires
+			List[Any]: Any values list by main execution
 		"""
+		values = []
 		for obj in objs:
-			obj.main()
+			main_ = getattr(obj, "main", None)
+			if callable(main_):
+				bound_to = getattr(main_, "__self__", None)
+				if isinstance(bound_to, type):
+					values.append( main_() )
+				elif isinstance(main_, FunctionType):
+					values.append( main_(obj) )
+				else:
+					values.append(main_())
+		return values

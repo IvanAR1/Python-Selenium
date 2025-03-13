@@ -21,8 +21,6 @@ def ExistFolder(*folders_path: str) -> bool:
             return False
     return True
 
-@overload
-def FindFiles(folder_path:str, patterns: Union[str, List[str]]) -> List[Path|str]:...
 def GlobFiles(folder_path:str, patterns: Union[str, List[str]]) -> List[Path|str]:
     """Helper function to get files matching patterns in a folder.
 
@@ -71,6 +69,7 @@ def CreateFolder(folder_path: str, mode:int=511) -> str:
 
     Args:
         folder_path (str): Folder path.
+        mode (int): Lecture mode. Defaults to 511.
 
     Returns:
         str: Folder path.
@@ -111,7 +110,7 @@ def DeleteFolder(folder_path:str):
     """Delete a folder
 
     Args:
-        folder_path (str): _description_
+        folder_path (str): Route folder.
 
     Raises:
         FileExistsError: If PATH_STRICT is enabled.
@@ -126,7 +125,7 @@ def DeleteFolder(folder_path:str):
         rmtree(folder_path, ignore_errors=PATH_STRICT)
         return folder_path
 
-def RecursiveFiles(folder_path: str, callback: Callable[[Path], Union[Path, Any]] = None, patterns: Union[str, List] = "*") -> List[Path]:
+def RecursiveFiles(folder_path: str, callback: Callable[[Path], Union[Path, Any]] = None, patterns: Union[str, List] = "*") -> List[Path|Any]:
     """Find recursive in folder and applied a callback.
 
     Args:
@@ -135,7 +134,7 @@ def RecursiveFiles(folder_path: str, callback: Callable[[Path], Union[Path, Any]
         patterns (Union[str, List], optional): Patterns to filter files. Defaults to "*". If string, separate with "|"
 
     Returns:
-        List[Path]: List of files, or values returned in callback.
+        List[Path|Any]: List of files, or values returned in callback.
     """
     values_returned = []
     if ExistFolder(folder_path):
@@ -151,7 +150,7 @@ def RecursiveFiles(folder_path: str, callback: Callable[[Path], Union[Path, Any]
 def CurrentWorkingDirectory(file_path:str = __file__):
     """Returned current working directory.
     Args:
-        file_path (str, None): Specific file working directory. Defaults to __file__.
+        file_path (str, optional): Specific file working directory. Defaults to __file__.
     Returns:
         str: Actual working directory.
     """

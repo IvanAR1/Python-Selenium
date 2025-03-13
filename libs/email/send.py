@@ -23,7 +23,6 @@ def _global_email(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_e
 
     Raises:
         FrameworkException: In case of error to send.
-        Exception: _description_
     """
     try:
         message = MIMEMultipart()
@@ -82,7 +81,7 @@ def withFiles(mail:smtplib.SMTP, subject:str, body:str, from_email:str, to_email
         body (str): Email body.
         from_email (str): Email from.
         to_email (str): Email to send.
-        files (list|str, optional): Files to send.
+        files (list|str): Files to send.
         cc_email (str, optional): Email with cc. Defaults to None.
         cco_email (str, optional): Email with bcc. Defaults to None.
         mime_type (str, optional): Type body (html, plain, ...). Defaults to "plain".

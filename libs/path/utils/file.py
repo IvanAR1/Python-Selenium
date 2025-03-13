@@ -108,7 +108,7 @@ def CreateFile(file_path:str, strContent:str = "", mode:TypeAlias = "w", **kwarg
 
     Args:
         file_path (str): File path
-        strContent (str, optional): _description_. Defaults to "".
+        strContent (str, optional): Content to write in file. Defaults to "".
 
     Returns:
         str: File path
