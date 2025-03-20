@@ -1,6 +1,6 @@
 import errno
 from pathlib import Path
-from shutil import copyfile
+from shutil import copyfile, move
 from config.framework import PATH_STRICT
 from typing import Union, TypeAlias, Literal
 
@@ -138,7 +138,7 @@ def CopyMoveFile(file_from_path:str, file_to_path:str, action:ActionCopyMove) ->
             copyfile(file_from_path, file_to_path)
             return file_from_path, file_to_path
         case "move":
-            Path(file_from_path).rename(file_to_path)
+            move(file_from_path, file_to_path)
             return file_from_path, file_to_path
             
 def DeleteFile(*files_path:str):
